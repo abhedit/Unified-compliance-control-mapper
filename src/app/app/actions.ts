@@ -5,11 +5,12 @@ import { redirect } from "next/navigation";
 import { requireSession } from "@/lib/auth";
 import {
   STATUSES, addEvidence, controlStates, createApiKey, createCustomControl, deleteCustomControl, deleteEvidence,
-  logActivity, orgControls, revokeApiKey, setEnabledFrameworks, upsertControlState,
+  logActivity, orgControls, revokeApiKey, saveProfile, setEnabledFrameworks, upsertControlState,
 } from "@/lib/org";
 import { similarControls, suggestMappings, type ControlStatus } from "@/lib/mapper";
 import { CONTROLS } from "@/data/controls";
 import { FRAMEWORK_IDS, type FrameworkId } from "@/data/frameworks";
+import { DEFAULT_PROFILE, type CompanyProfile } from "@/lib/applicability";
 
 function assertControl(orgId: string, id: string) {
   if (!orgControls(orgId).some((c) => c.id === id)) throw new Error("Unknown control");
@@ -64,6 +65,15 @@ export async function saveFrameworksAction(form: FormData) {
   const ids = form.getAll("frameworks").map(String);
   setEnabledFrameworks(s.orgId, ids);
   logActivity(s.orgId, s.name, "frameworks.updated", ids.join(", "));
+  revalidatePath("/app", "layout");
+}
+
+export async function applyScopeAction(profile: CompanyProfile, frameworks: FrameworkId[]) {
+  const s = await requireSession();
+  const clean = Object.fromEntries(Object.entries(DEFAULT_PROFILE).map(([k, v]) => [k, k in profile ? (profile as unknown as Record<string, unknown>)[k] : v]));
+  saveProfile(s.orgId, clean);
+  setEnabledFrameworks(s.orgId, frameworks);
+  logActivity(s.orgId, s.name, "scope.applied", `${frameworks.length} frameworks from applicability assessment`);
   revalidatePath("/app", "layout");
 }
 

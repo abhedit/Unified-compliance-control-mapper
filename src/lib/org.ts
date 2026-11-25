@@ -145,3 +145,19 @@ export function orgFromApiKey(header: string | null): string | null {
   db().prepare("UPDATE api_keys SET last_used_at = ? WHERE id = ?").run(now(), row.id);
   return row.org_id;
 }
+
+// ─────────── Applicability profile ───────────
+
+export function getProfile(orgId: string) {
+  const row = db().prepare("SELECT profile_json FROM org_profile WHERE org_id = ?").get(orgId) as { profile_json: string } | undefined;
+  return row ? (JSON.parse(row.profile_json) as import("./applicability").CompanyProfile) : null;
+}
+
+export function saveProfile(orgId: string, profile: unknown) {
+  db()
+    .prepare(
+      `INSERT INTO org_profile (org_id, profile_json, updated_at) VALUES (?, ?, ?)
+       ON CONFLICT(org_id) DO UPDATE SET profile_json = excluded.profile_json, updated_at = excluded.updated_at`,
+    )
+    .run(orgId, JSON.stringify(profile), now());
+}

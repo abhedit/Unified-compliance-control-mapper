@@ -30,8 +30,30 @@ def n_dpdp(t):
     m = re.match(r"^(\d+)(\((\d+)\))?", t)
     if not m: return None
     return f"Sec. 8({m.group(3)})" if m.group(1) == "8" and m.group(3) else f"Sec. {m.group(1)}"
+def n_iso_mgmt(t):  # ISO management-system clauses and Annex A (42001 / 22301)
+    t = re.sub(r"\(.*$", "", t)
+    return t if re.fullmatch(r"(A\.)?\d+(\.\d+)+", t) else None
+def n_171(t):
+    m = re.match(r"^(\d\d\.\d\d\.\d\d)", t)
+    return m.group(1) if m else None
+def n_nis2(t):
+    m = re.match(r"Article (\d+)\.(\d+)(\(\w+\))?", t)
+    return f"Art. {m.group(1)}({m.group(2)}){m.group(3) or ''}" if m else None
+def n_eu_article(t):
+    m = re.match(r"Article (\d+)", t)
+    return f"Art. {m.group(1)}" if m else None
+def n_keep(t): return t.strip() or None
+def n_sec(t):
+    if t.startswith("Form 8-K Item 1.05"): return "8-K 1.05"
+    return t.replace("17 CFR ", "").strip()
+def n_spdi(t):
+    m = re.match(r"^(\d+)(\.0)?(.*)$", t)
+    return f"Rule {m.group(1)}{m.group(3)}" if m else None
 COLS = {"soc2": [(48, n_soc2)], "cisv8": [(51, n_cis)], "iso27001": [(74, n_iso_cl), (75, n_iso_a)], "nist80053": [(91, n_800)],
-        "csf2": [(116, n_csf)], "pci4": [(121, n_pci)], "hipaa": [(176, n_hipaa)], "gdpr": [(232, n_gdpr)], "dpdp": [(283, n_dpdp)]}
+        "csf2": [(116, n_csf)], "pci4": [(121, n_pci)], "hipaa": [(176, n_hipaa)], "gdpr": [(232, n_gdpr)], "dpdp": [(283, n_dpdp)],
+        "iso42001": [(82, n_iso_mgmt)], "iso22301": [(73, n_iso_mgmt)], "nist800171": [(109, n_171)], "nis2": [(233, n_nis2)],
+        "dora": [(229, n_eu_article)], "euaiact": [(226, n_eu_article)], "glba": [(175, n_keep)], "nydfs": [(202, n_keep)],
+        "seccyber": [(184, n_sec)], "sox": [(178, n_keep)], "itspdi": [(284, n_spdi)]}
 controls, universe, raw_hipaa = [], {k: set() for k in COLS}, set()
 for row in ws.iter_rows(min_row=2, values_only=True):
     if not row[2]: continue

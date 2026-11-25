@@ -38,19 +38,20 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 px-4 pt-16 pb-20 lg:grid-cols-2 lg:pt-24">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
-              Mapped per NIST IR 8477 · independently corroborated against SCF
+              23 frameworks · India, US, EU &amp; UK · mapped per NIST IR 8477
             </span>
             <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
               Implement a control once.<br />
               <span className="text-brand-600">Comply with every framework.</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg text-slate-600">
-              abhedit UCM is a unified compliance control mapper. One library of {CONTROLS.length} unified controls, mapped to {totalReqs} requirements across ISO 27001, SOC 2,
-              NIST, HIPAA, PCI DSS, GDPR, CIS and DPDP — so your team stops doing the same compliance work twice.
+              abhedit UCM is a unified compliance control mapper. One library of {CONTROLS.length} unified controls, mapped to {totalReqs} requirements across security certifications (ISO 27001, SOC 2, ISO 42001, ISO 22301), privacy laws (GDPR, DPDP, CCPA),
+              financial and sector regulations (PCI DSS, HIPAA, DORA, NIS2, GLBA, NYDFS, SEC, SOX), the EU AI Act and India&apos;s CERT-In rules — so your team stops doing the same compliance work twice.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/signup" className="btn-primary px-6 py-3 text-base">Start free trial</Link>
-              <Link href="/map" className="btn-secondary px-6 py-3 text-base">Try the free mapper →</Link>
+              <Link href="/assess" className="btn-secondary px-6 py-3 text-base">What applies to my company? →</Link>
+              <Link href="/map" className="btn-ghost px-4 py-3 text-base">Free mapper</Link>
             </div>
             <dl className="mt-10 grid max-w-lg grid-cols-3 gap-6">
               {[[FRAMEWORKS.length, "frameworks"], [CONTROLS.length, "unified controls"], [links, "mapping links"]].map(([v, l]) => (

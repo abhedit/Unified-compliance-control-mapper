@@ -25,7 +25,8 @@ const STATUS_DOT: Record<ControlStatus, string> = {
 };
 
 export default function MapperExplorer({ controls, frameworks, statuses, initial = null, controlBase, basePath }: Props) {
-  const fwList = useMemo(() => FRAMEWORKS.filter((f) => !frameworks || frameworks.includes(f.id)), [frameworks]);
+  const initialFw = initial?.kind === "req" ? initial.fw : undefined;
+  const fwList = useMemo(() => FRAMEWORKS.filter((f) => !frameworks || frameworks.includes(f.id) || f.id === initialFw), [frameworks, initialFw]);
   const [source, setSource] = useState<FrameworkId | "controls">(
     initial?.kind === "req" ? initial.fw : initial?.kind === "control" ? "controls" : (fwList[0]?.id ?? "iso27001"),
   );

@@ -2,27 +2,42 @@
 
 **Implement a control once. Comply with every framework.**
 
-abhedit UCM is a multi-tenant SaaS application that maps one control across ISO 27001, SOC 2, NIST and other frameworks. It ships with a curated **Unified Control Library** (v2026.11) of **92 controls**, linked by **1,054 typed mapping links** to **654 requirements** across 9 frameworks.
+abhedit UCM is a multi-tenant SaaS application that maps one control across every compliance regime a company typically has to follow. It ships with a curated **Unified Control Library** (v2026.11) of **103 controls**, linked by **1,594 typed mapping links** to **998 requirements** across **23 frameworks** in India, the US, the EU, the UK and globally.
+
+It also includes an **applicability assessment** (`/assess` publicly, *Obligations* in-app). It turns a short company profile into the list of **mandatory**, **customer-expected** and **recommended** frameworks, with the reason for each, and the number of unified controls that cover them all.
 
 The library is built with the procedure enterprise GRC programmes use. The full procedure is in **[MAPPING_METHODOLOGY.md](MAPPING_METHODOLOGY.md)**, and current metrics are in [docs/mapping-qa-report.md](docs/mapping-qa-report.md).
 
 - **Common control framework:** requirements map once to unified controls, and cross-framework equivalence is derived through the controls they share.
-- **NIST IR 8477 relationship types:** every link is typed `=` equal, `⊂` subset of, `⊃` superset of, or `∩` intersects with. Readiness scoring and crosswalk match strength (equivalent, strong, partial, supporting) follow from those types.
-- **Independent corroboration:** every control is anchored to Secure Controls Framework (SCF 2026.3) controls. 65% of links are corroborated by the SCF crosswalk. The rest are analyst-asserted, individually reviewed, and labelled as such in the product.
-- **CI integrity gates (R1–R7):** every mapped code exists, every requirement has non-supportive coverage, and relationships and provenance stay consistent.
-- **Versioned change control:** see [CHANGELOG-mappings.md](CHANGELOG-mappings.md).
+- **NIST IR 8477 relationship types:** every link is typed `=` equal, `⊂` subset of, `⊃` superset of, or `∩` intersects with. Readiness scoring and crosswalk match strength follow from those types.
+- **Independent corroboration:** every control is anchored to Secure Controls Framework (SCF 2026.3) controls. 65% of links are corroborated by the SCF crosswalk. The rest are analyst-asserted, individually reviewed, and labelled in the product.
+- **CI integrity gates (R1–R7)** and **versioned change control** (see [CHANGELOG-mappings.md](CHANGELOG-mappings.md)).
 
-| Framework | Version | Requirements | Catalog completeness |
-|---|---|---:|---|
-| ISO/IEC 27001 | 2022 | 123 | All clauses 4–10 and all 93 Annex A controls |
-| SOC 2 Trust Services Criteria | 2017 TSC (rev. 2022) | 61 | All CC, A, C, PI and P criteria |
-| NIST Cybersecurity Framework | 2.0 | 106 | All subcategories |
-| NIST SP 800-53 | Rev. 5 | 100 | Base controls commonly selected for the moderate baseline; titles from the NIST OSCAL catalog |
-| HIPAA Security & Breach Notification Rules | 45 CFR 164 | 66 | All Security Rule standards and implementation specifications, plus breach notification |
-| PCI DSS | v4.0.1 | 63 | All second-level requirements |
-| GDPR | 2016/679 | 36 | Operative controller and processor obligations, data subject rights and transfer articles |
-| CIS Critical Security Controls | v8.1 | 79 | All 56 IG1 safeguards plus selected IG2/IG3 safeguards |
-| India DPDP Act | 2023 | 20 | Data Fiduciary obligations and Data Principal rights |
+| Region | Framework | Legal force | Requirements |
+|---|---|---|---:|
+| Global | ISO/IEC 27001:2022 (all clauses and 93 Annex A controls) | Certification | 123 |
+| Global | ISO/IEC 42001:2023 AI management (clauses and all 38 Annex A controls) | Certification | 65 |
+| Global | ISO 22301:2019 Business continuity | Certification | 32 |
+| Global | NIST CSF 2.0 (all 106 subcategories) | Voluntary | 106 |
+| Global | CIS Controls v8.1 (all IG1 plus selected IG2/IG3) | Voluntary | 79 |
+| Global | PCI DSS v4.0.1 (all 63 second-level requirements) | Contractual | 63 |
+| US | SOC 2 Trust Services Criteria (all 61) | Attestation | 61 |
+| US | NIST SP 800-53 Rev. 5 (moderate-baseline base controls) | Contractual | 100 |
+| US | NIST SP 800-171 Rev. 3 / CMMC L2 basis (all 97, official OSCAL titles) | Contractual | 97 |
+| US | HIPAA Security & Breach Notification Rules | Law | 66 |
+| US | GLBA FTC Safeguards Rule §314.4 | Law | 17 |
+| US | NYDFS 23 NYCRR 500 | Law | 16 |
+| US | SEC cybersecurity disclosure (8-K 1.05, S-K 106) | Law | 5 |
+| US | Sarbanes-Oxley §302/§404 plus ITGC domains | Law | 16 |
+| US | CCPA / CPRA | Law | 14 |
+| EU | GDPR | Law | 36 |
+| EU | NIS2 Directive | Law | 18 |
+| EU | DORA | Law | 20 |
+| EU | EU AI Act | Law | 20 |
+| UK | Cyber Essentials | Certification | 5 |
+| India | DPDP Act 2023 | Law | 20 |
+| India | CERT-In Directions 2022 | Law | 7 |
+| India | IT (SPDI) Rules 2011 | Law | 12 |
 
 ## Market research: how others do it
 
@@ -103,7 +118,7 @@ Environment variables (see `.env.example`):
 ## Roadmap
 
 1. **Integrations for automated evidence**: AWS, GCP and Azure config, Okta and Google Workspace, GitHub, Jira, and MDM.
-2. **More frameworks**: ISO 27701, ISO 42001, SOC 1, NIST 800-171 / CMMC, RBI / SEBI CSCRF, CERT-In directions, DORA, NIS2, HITRUST.
+2. **More frameworks**: ISO/IEC 27701, 27017/27018, CSA CCM, SEBI CSCRF, the RBI IT Master Direction, HITRUST, Singapore PDPA, Australia Essential Eight, and US state privacy laws beyond California.
 3. **Auditor review workflow:** auditors can accept or challenge individual links, and customers can override relationships for their own scope.
 4. **Consultant / MSP mode**: many client workspaces under one partner account.
 5. **Team invites, RBAC, SSO/SAML, and audit-ready PDF exports.**

@@ -17,16 +17,27 @@ if (!refPath) throw new Error("usage: reconcile.ts <scf-reference.json> [--detai
 const ref = JSON.parse(readFileSync(refPath, "utf8")) as {
   version: string;
   controls: { id: string; refs: Record<string, string[]> }[];
+  universe: Record<string, string[]>;
 };
+const hasReference = (fw: string) => (ref.universe[fw]?.length ?? 0) > 0;
 const scf = new Map(ref.controls.map((c) => [c.id, c]));
 const catalog = Object.fromEntries(FRAMEWORKS.map((f) => [f.id, new Set(f.requirements.map((r) => r.code))]));
 
 /** Roll a reference code up to catalog granularity (e.g. HIPAA sub-paragraphs). */
-function roll(fw: string, code: string): string | null {
+// ISO management-system catalogs list one representative entry per sub-clause family
+// (e.g. 9.3.1 stands for 9.3.x), so reference sub-clauses roll up to their sibling.
+const SIBLING_ROLLUP = new Set(["iso42001", "iso22301"]);
+export function roll(fw: string, code: string): string | null {
   if (catalog[fw].has(code)) return code;
   let best: string | null = null;
-  for (const c of catalog[fw]) if (code.startsWith(c + "(") && (!best || c.length > best.length)) best = c;
-  return best;
+  for (const c of catalog[fw]) if ((code.startsWith(c + "(") || code.startsWith(c + ".")) && (!best || c.length > best.length)) best = c;
+  if (best || !SIBLING_ROLLUP.has(fw)) return best;
+  for (let parts = code.split("."); parts.length > 1; parts = parts.slice(0, -1)) {
+    const parent = parts.slice(0, -1).join(".");
+    const sib = [...catalog[fw]].find((c) => c.startsWith(parent + ".") && c.split(".").length === parts.length);
+    if (sib) return sib;
+  }
+  return null;
 }
 
 const missingAnchors = CONTROLS.flatMap((c) => c.scf.filter((a) => !scf.has(a)).map((a) => `${c.id} -> ${a}`));
@@ -94,10 +105,15 @@ const md = [
   ``,
   `A link is *corroborated* when the reference crosswalk, reached through the control's SCF anchor controls, maps the same requirement.`,
   `Links not corroborated are analyst-asserted and were individually reviewed (see methodology §5).`,
+  `Frameworks the reference does not cover at catalog granularity (e.g. UK Cyber Essentials themes, CCPA statute sections, CERT-In Directions) are fully analyst-mapped.`,
   ``,
   `| Framework | Links | Corroborated | Rate | Reference suggestions reviewed |`,
   `|---|---:|---:|---:|---:|`,
-  ...FRAMEWORKS.map((f) => `| ${f.name} | ${stats[f.id].links} | ${stats[f.id].corroborated} | ${pct(stats[f.id].corroborated, stats[f.id].links)} | ${stats[f.id].suggestions} |`),
+  ...FRAMEWORKS.map((f) =>
+    hasReference(f.id)
+      ? `| ${f.name} | ${stats[f.id].links} | ${stats[f.id].corroborated} | ${pct(stats[f.id].corroborated, stats[f.id].links)} | ${stats[f.id].suggestions} |`
+      : `| ${f.name} | ${stats[f.id].links} | — | n/a — no reference crosswalk; analyst-mapped | — |`,
+  ),
   `| **Total** | **${totLinks}** | **${totCorr}** | **${pct(totCorr, totLinks)}** | |`,
   ``,
   `Reference suggestions that remain open were reviewed and rejected as over-mapping: typically program-level reference controls`,

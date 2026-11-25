@@ -2,6 +2,7 @@
 // Titles are short paraphrased headings for reference/mapping purposes only.
 // They are not a substitute for the official standard text — licensed standards
 // (e.g. ISO/IEC 27001) must be obtained from their publishers.
+import { EXTENDED_FRAMEWORKS } from "./catalogs/extended.ts";
 
 export type FrameworkId =
   | "iso27001"
@@ -12,7 +13,26 @@ export type FrameworkId =
   | "pci4"
   | "gdpr"
   | "cisv8"
-  | "dpdp";
+  | "dpdp"
+  // extended catalog (src/data/catalogs)
+  | "iso42001"
+  | "iso22301"
+  | "nist800171"
+  | "cyberessentials"
+  | "nis2"
+  | "dora"
+  | "euaiact"
+  | "ccpa"
+  | "glba"
+  | "nydfs"
+  | "seccyber"
+  | "sox"
+  | "certin"
+  | "itspdi";
+
+export type Region = "Global" | "EU" | "US" | "UK" | "India";
+/** Legal force of the framework: a law/regulation, a certifiable or attestable standard, or voluntary guidance. */
+export type ObligationKind = "Law / regulation" | "Certification / attestation" | "Contractual standard" | "Voluntary framework";
 
 export interface Requirement {
   code: string;
@@ -26,17 +46,23 @@ export interface Framework {
   shortName: string;
   version: string;
   publisher: string;
-  category: "Security" | "Privacy" | "Industry" | "Regulatory";
+  category: "Security" | "Privacy" | "Industry" | "Regulatory" | "AI" | "Resilience" | "Financial";
+  region: Region;
+  kind: ObligationKind;
+  /** Plain-language trigger for when an organization is expected to comply. */
+  appliesTo: string;
   color: string; // tailwind-friendly hex used in badges/charts
   description: string;
+  /** Scope note when the catalog is a declared selection rather than the full official set. */
+  scopeNote?: string;
   requirements: Requirement[];
 }
 
 type Row = [code: string, title: string];
-const g = (group: string, rows: Row[]): Requirement[] =>
+export const g = (group: string, rows: Row[]): Requirement[] =>
   rows.map(([code, title]) => ({ code, title, group }));
 
-export const FRAMEWORKS: Framework[] = [
+const CORE_FRAMEWORKS: Framework[] = [
   {
     id: "iso27001",
     name: "ISO/IEC 27001:2022",
@@ -44,6 +70,9 @@ export const FRAMEWORKS: Framework[] = [
     version: "2022",
     publisher: "ISO/IEC",
     category: "Security",
+    region: "Global",
+    kind: "Certification / attestation",
+    appliesTo: "Organizations seeking ISO certification, or selling to enterprise and international customers that require it.",
     color: "#2563eb",
     description:
       "International standard for an Information Security Management System (ISMS): clauses 4–10 plus the 93 Annex A controls.",
@@ -190,6 +219,9 @@ export const FRAMEWORKS: Framework[] = [
     version: "TSC 2017 (rev. 2022)",
     publisher: "AICPA",
     category: "Security",
+    region: "US",
+    kind: "Certification / attestation",
+    appliesTo: "Service organizations (especially SaaS) whose customers request a SOC 2 Type I/II report.",
     color: "#7c3aed",
     description:
       "AICPA Trust Services Criteria for Security (Common Criteria), Availability, Confidentiality, Processing Integrity and Privacy.",
@@ -290,6 +322,9 @@ export const FRAMEWORKS: Framework[] = [
     version: "2.0",
     publisher: "NIST",
     category: "Security",
+    region: "Global",
+    kind: "Voluntary framework",
+    appliesTo: "Any organization building or benchmarking a cybersecurity program; often required by US public-sector and critical-infrastructure customers.",
     color: "#0891b2",
     description:
       "NIST CSF 2.0 Core: Govern, Identify, Protect, Detect, Respond and Recover functions with categories and subcategories.",
@@ -421,6 +456,10 @@ export const FRAMEWORKS: Framework[] = [
     version: "Rev. 5 (selected controls)",
     publisher: "NIST",
     category: "Security",
+    region: "US",
+    kind: "Contractual standard",
+    scopeNote: "Base controls commonly selected for the moderate baseline (100 of 324).",
+    appliesTo: "US federal systems, FedRAMP cloud services and their contractors; widely used as a comprehensive control catalog.",
     color: "#0f766e",
     description:
       "Security and privacy control catalog. Base controls commonly selected for the moderate baseline are included; titles follow the official NIST OSCAL catalog.",
@@ -570,6 +609,9 @@ export const FRAMEWORKS: Framework[] = [
     version: "45 CFR Part 164",
     publisher: "U.S. HHS",
     category: "Regulatory",
+    region: "US",
+    kind: "Law / regulation",
+    appliesTo: "US covered entities and business associates that create, receive, maintain or transmit ePHI.",
     color: "#db2777",
     description:
       "All Security Rule standards and implementation specifications (§164.306–316) for ePHI, plus Breach Notification Rule obligations (§164.404–410).",
@@ -661,6 +703,9 @@ export const FRAMEWORKS: Framework[] = [
     version: "4.0.1",
     publisher: "PCI SSC",
     category: "Industry",
+    region: "Global",
+    kind: "Contractual standard",
+    appliesTo: "Any entity that stores, processes or transmits payment card data, or can affect the security of the cardholder data environment.",
     color: "#ea580c",
     description:
       "Payment Card Industry Data Security Standard: 12 principal requirements protecting cardholder data environments (CDE).",
@@ -761,6 +806,9 @@ export const FRAMEWORKS: Framework[] = [
     version: "2016/679",
     publisher: "European Union",
     category: "Privacy",
+    region: "EU",
+    kind: "Law / regulation",
+    appliesTo: "Organizations established in the EU, or offering goods/services to or monitoring individuals in the EU.",
     color: "#16a34a",
     description:
       "EU regulation on the protection of personal data: principles, lawful bases, data subject rights, security and accountability.",
@@ -818,6 +866,9 @@ export const FRAMEWORKS: Framework[] = [
     version: "8.1 (IG1 complete + selected IG2/IG3)",
     publisher: "Center for Internet Security",
     category: "Security",
+    region: "Global",
+    kind: "Voluntary framework",
+    appliesTo: "Any organization wanting a prioritized, practical security baseline (IG1 is the minimum essential cyber hygiene).",
     color: "#ca8a04",
     description:
       "Prioritized safeguards against the most prevalent attacks. All 56 Implementation Group 1 (essential cyber hygiene) safeguards plus selected IG2/IG3 safeguards.",
@@ -926,6 +977,9 @@ export const FRAMEWORKS: Framework[] = [
     version: "2023 (with 2025 Rules)",
     publisher: "Government of India",
     category: "Privacy",
+    region: "India",
+    kind: "Law / regulation",
+    appliesTo: "Organizations processing digital personal data in India, or of individuals in India in connection with offering goods/services.",
     color: "#9333ea",
     description:
       "India's DPDP Act 2023: obligations of Data Fiduciaries, rights of Data Principals, consent, safeguards and breach intimation.",
@@ -959,6 +1013,8 @@ export const FRAMEWORKS: Framework[] = [
     ],
   },
 ];
+
+export const FRAMEWORKS: Framework[] = [...CORE_FRAMEWORKS, ...EXTENDED_FRAMEWORKS];
 
 export const FRAMEWORK_BY_ID: Record<FrameworkId, Framework> = Object.fromEntries(
   FRAMEWORKS.map((f) => [f.id, f]),

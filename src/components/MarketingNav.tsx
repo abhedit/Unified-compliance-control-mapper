@@ -8,6 +8,7 @@ export default function MarketingNav() {
         <Link href="/"><Logo /></Link>
         <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
           <Link href="/map" className="hover:text-slate-900">Free mapper</Link>
+          <Link href="/assess" className="hover:text-slate-900">What applies to me?</Link>
           <Link href="/#features" className="hover:text-slate-900">Features</Link>
           <Link href="/#frameworks" className="hover:text-slate-900">Frameworks</Link>
           <Link href="/methodology" className="hover:text-slate-900">Methodology</Link>

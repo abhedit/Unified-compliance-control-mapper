@@ -54,9 +54,20 @@ Each unified control has:
 2. **Completeness check.** Each catalog is diffed against the requirement universe referenced by SCF 2026.3. Current status:
    - complete official sets for ISO 27001:2022, SOC 2 TSC, NIST CSF 2.0 (all 106 subcategories), PCI DSS v4.0.1 (all 63 second-level requirements), the HIPAA Security Rule and CIS IG1 (all 56 safeguards)
    - a declared selection for NIST 800-53 (base controls commonly selected for the moderate baseline) and for CIS IG2/IG3
+   - **Extended regimes:** ISO 42001 and ISO 22301 use one representative entry per sub-clause family; reference sub-clauses roll up to their sibling. The EU AI Act covers the core organizational obligations (Articles 4–73). SOX uses §302/§404 plus the standard PCAOB AS 2201 ITGC domains. Every catalog declares its scope in the product (`scopeNote`).
+   - **Not covered by the reference:** UK Cyber Essentials, CCPA statute sections and the CERT-In Directions have no reference crosswalk at catalog granularity. They are fully analyst-mapped and reported as such.
 3. **Titles.**
    - NIST 800-53 titles come from the official OSCAL catalog.
    - Other titles are short paraphrases, because licensed standard text (e.g. ISO) is not reproduced.
+
+## 3a. Applicability (which frameworks apply)
+
+The applicability engine (`src/lib/applicability.ts`) turns a company profile into three groups:
+- **mandatory:** law or regulation, or a binding contractual standard such as PCI DSS
+- **expected:** routinely required by customers, partners or tenders
+- **recommended:** baseline best practice
+
+It covers headquarters, markets, industry, size, data types, listing status, licences and AI use. Every result carries the scope trigger that produced it, drawn from the published applicability provisions; for example, the GDPR's territorial scope, NIS2 sector and size thresholds, CCPA revenue and volume thresholds, and the CERT-In Directions' coverage of body corporates in India. Borderline cases are deliberately graded *expected* with a "confirm" note, never *mandatory*.
 
 ## 4. Step 2: mapping and relationship assignment (NIST IR 8477 STRM)
 

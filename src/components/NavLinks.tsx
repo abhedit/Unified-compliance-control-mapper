@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const LINKS = [
   ["/app", "Dashboard", "◧"],
+  ["/app/obligations", "Obligations", "⚖"],
   ["/app/mapper", "Control mapper", "⇄"],
   ["/app/controls", "Controls", "☰"],
   ["/app/frameworks", "Frameworks", "▦"],

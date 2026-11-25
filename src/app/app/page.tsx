@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { loadWorkspace } from "@/lib/workspace";
-import { recentActivity } from "@/lib/org";
+import { getProfile, recentActivity } from "@/lib/org";
 import { coverage, overlap } from "@/lib/mapper";
 import { FRAMEWORK_BY_ID } from "@/data/frameworks";
 import { Empty, PageHeader, Progress, Stat, StatusBadge, fmtDate } from "@/components/ui";
@@ -32,6 +32,12 @@ export default async function Dashboard() {
         actions={<Link href="/app/mapper" className="btn-primary">Open control mapper</Link>}
       />
 
+      {!getProfile(session.orgId) && (
+        <Link href="/app/obligations" className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-brand-200 bg-brand-50 p-4 text-sm hover:bg-brand-100">
+          <span><b className="text-brand-800">Which laws and standards apply to {session.orgName}?</b> <span className="text-brand-700">Answer a short profile to identify mandatory, customer-expected and recommended frameworks.</span></span>
+          <span className="font-semibold whitespace-nowrap text-brand-700">Run assessment →</span>
+        </Link>
+      )}
       {frameworks.length === 0 ? (
         <Empty>
           No frameworks enabled yet. <Link className="font-semibold text-brand-600" href="/app/settings">Choose frameworks →</Link>

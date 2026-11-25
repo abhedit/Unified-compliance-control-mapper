@@ -23,6 +23,7 @@ export type Domain =
   | "Incident Response"
   | "Business Continuity"
   | "Privacy"
+  | "AI Governance"
   | "Compliance";
 
 /**
@@ -73,6 +74,14 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["12.1", "1.1", "2.1", "3.1", "4.1", "5.1", "6.1", "7.1", "8.1", "9.1", "10.1", "11.1"],
       gdpr: ["Art. 24"],
       dpdp: ["Sec. 8(4)"],
+      iso42001: ["5.2", "7.5.1", "A.2.2", "A.2.3"],
+      iso22301: ["5.2.1"],
+      nist800171: ["03.15.01"],
+      nis2: ["Art. 21(1)", "Art. 21(2)(a)"],
+      dora: ["Art. 6"],
+      nydfs: ["500.2", "500.3"],
+      itspdi: ["Rule 5(8)", "Rule 8"],
+      ccpa: ["1798.100(e)"],
     },
   },
   {
@@ -93,6 +102,13 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.308(a)(2)"],
       pci4: ["12.4", "1.1", "2.1", "3.1", "4.1", "5.1", "6.1", "7.1", "8.1", "9.1", "10.1", "11.1"],
       cisv8: ["17.1"],
+      iso42001: ["5.3", "A.3.2"],
+      iso22301: ["5.3", "8.4.2.1"],
+      nist800171: ["03.01.22"],
+      dora: ["Art. 5"],
+      glba: ["314.4(a)"],
+      nydfs: ["500.4", "500.10"],
+      seccyber: ["229.106(c)(2)"],
     },
   },
   {
@@ -113,6 +129,13 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.306(a)"],
       pci4: ["12.4"],
       gdpr: ["Art. 24"],
+      iso42001: ["5.1", "7.1", "7.5.1", "9.3.1"],
+      iso22301: ["5.1", "6.3", "7.1", "8.3.4", "9.3.1"],
+      nis2: ["Art. 20(1)", "Art. 20(2)"],
+      dora: ["Art. 5"],
+      glba: ["314.4(i)"],
+      nydfs: ["500.2", "500.4"],
+      seccyber: ["229.106(c)(1)"],
     },
   },
   {
@@ -131,6 +154,9 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["GV.OC-02", "GV.OC-04", "GV.OC-05", "GV.RM-01"],
       nist80053: ["PL-2"],
       pci4: ["12.5"],
+      iso42001: ["4.2", "4.3", "6.2"],
+      iso22301: ["4.1", "4.2.1", "4.3.1"],
+      nist800171: ["03.15.02"],
     },
   },
   {
@@ -149,6 +175,8 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["PR.AA-05"],
       nist80053: ["AC-5"],
       pci4: ["6.5"],
+      nist800171: ["03.01.04"],
+      sox: ["ITGC-CM2"],
     },
   },
   {
@@ -168,6 +196,8 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PL-2"],
       hipaa: ["164.316(b)(2)(i)", "164.316(b)(1)(i)", "164.316(b)(1)(ii)", "164.316(b)(2)(ii)"],
       pci4: ["12.1", "1.1", "2.1", "3.1", "4.1", "5.1", "6.1", "7.1", "8.1", "9.1", "10.1", "11.1"],
+      iso42001: ["7.5.1"],
+      iso22301: ["7.5.1"],
     },
   },
   {
@@ -187,6 +217,9 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PM-15"],
       gdpr: ["Art. 31"],
       cisv8: ["17.2"],
+      iso42001: ["7.4"],
+      dora: ["Art. 45"],
+      certin: ["CI-(iii)", "CI-(iv)"],
     },
     rel: {
       "csf2:RS.CO-03": "intersects_with",
@@ -213,6 +246,16 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["12.3"],
       gdpr: ["Art. 32"],
       dpdp: ["Sec. 8(5)"],
+      iso42001: ["6.1.1", "6.1.2", "8.2"],
+      iso22301: ["6.1.1", "8.2.3"],
+      nist800171: ["03.11.01"],
+      nis2: ["Art. 21(1)", "Art. 21(2)(a)"],
+      dora: ["Art. 6", "Art. 8"],
+      glba: ["314.4(b)"],
+      nydfs: ["500.2", "500.9"],
+      seccyber: ["229.106(b)(1)", "229.106(b)(2)"],
+      itspdi: ["Rule 5(8)", "Rule 8"],
+      ccpa: ["1798.100(e)"],
     },
     rel: {
       "gdpr:Art. 32": "intersects_with",
@@ -236,6 +279,9 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["RA-7", "CA-5"],
       hipaa: ["164.308(a)(1)(ii)(B)", "164.308(a)(1)(i)"],
       pci4: ["12.3"],
+      iso42001: ["6.1.3", "8.3"],
+      nist800171: ["03.11.04", "03.12.02"],
+      seccyber: ["229.106(b)(1)"],
     },
   },
   {
@@ -253,6 +299,7 @@ export const CONTROLS: UnifiedControl[] = [
       soc2: ["CC3.4"],
       csf2: ["ID.RA-07"],
       nist80053: ["CM-4"],
+      iso42001: ["6.3"],
     },
   },
   {
@@ -270,6 +317,9 @@ export const CONTROLS: UnifiedControl[] = [
       soc2: ["CC3.2", "CC7.1"],
       csf2: ["ID.RA-02", "ID.RA-03", "DE.AE-07"],
       nist80053: ["PM-16", "SI-5"],
+      nist800171: ["03.14.03"],
+      dora: ["Art. 45"],
+      nydfs: ["500.10"],
     },
     rel: {
       "iso27001:A.5.7": "equal",
@@ -295,6 +345,14 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["12.4"],
       gdpr: ["Art. 24", "Art. 32"],
       dpdp: ["Sec. 10"],
+      iso42001: ["9.1", "9.2.1"],
+      iso22301: ["8.6", "9.1", "9.2.1"],
+      nist800171: ["03.12.01", "03.12.03"],
+      nis2: ["Art. 21(2)(f)"],
+      glba: ["314.4(d)", "314.4(g)"],
+      sox: ["404(a)", "404(b)"],
+      itspdi: ["Rule 8"],
+      ccpa: ["1798.185(a)(15)"],
     },
   },
   {
@@ -312,6 +370,11 @@ export const CONTROLS: UnifiedControl[] = [
       soc2: ["CC4.2"],
       csf2: ["ID.IM-01", "ID.IM-02", "ID.IM-03"],
       nist80053: ["CA-5"],
+      iso42001: ["10.1", "10.2"],
+      iso22301: ["10.1.1", "10.2"],
+      nist800171: ["03.12.02"],
+      nis2: ["Art. 21(4)"],
+      glba: ["314.4(g)"],
     },
   },
 
@@ -334,6 +397,11 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.310(d)(2)(iii)"],
       pci4: ["12.5", "11.2"],
       cisv8: ["1.1", "1.2"],
+      nist800171: ["03.04.10", "03.05.02"],
+      nis2: ["Art. 21(2)(i)"],
+      dora: ["Art. 8"],
+      glba: ["314.4(c)(2)"],
+      nydfs: ["500.13"],
     },
   },
   {
@@ -353,6 +421,11 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["CM-8"],
       pci4: ["12.5"],
       cisv8: ["2.1", "2.3"],
+      nist800171: ["03.04.08", "03.04.10"],
+      nis2: ["Art. 21(2)(i)"],
+      dora: ["Art. 8"],
+      glba: ["314.4(c)(2)"],
+      nydfs: ["500.13"],
     },
   },
   {
@@ -374,6 +447,9 @@ export const CONTROLS: UnifiedControl[] = [
       gdpr: ["Art. 30"],
       cisv8: ["3.1", "3.2"],
       dpdp: ["Sec. 8(4)"],
+      nist800171: ["03.04.11"],
+      dora: ["Art. 8"],
+      glba: ["314.4(c)(2)"],
     },
   },
   {
@@ -393,6 +469,7 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["RA-2"],
       hipaa: ["164.308(a)(7)(ii)(E)"],
       cisv8: ["3.1"],
+      nist800171: ["03.08.04"],
     },
     rel: {
       "iso27001:A.5.12": "equal",
@@ -415,6 +492,7 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PL-4"],
       hipaa: ["164.310(b)"],
       pci4: ["12.2"],
+      nist800171: ["03.01.20", "03.01.22", "03.15.03"],
     },
     rel: {
       "soc2:CC2.2": "intersects_with",
@@ -438,6 +516,8 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.310(d)(1)", "164.310(d)(2)(i)", "164.310(d)(2)(ii)"],
       pci4: ["9.4"],
       cisv8: ["3.5"],
+      nist800171: ["03.08.01", "03.08.02", "03.08.03", "03.08.05", "03.08.07"],
+      glba: ["314.4(c)(6)"],
     },
   },
 
@@ -459,8 +539,11 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PS-3"],
       hipaa: ["164.308(a)(3)(ii)(B)"],
       pci4: ["12.7"],
+      nist800171: ["03.09.01"],
+      nis2: ["Art. 21(2)(i)"],
     },
     rel: {
+      "nist800171:03.09.01": "equal",
       "iso27001:A.6.1": "equal",
       "nist80053:PS-3": "equal",
       "pci4:12.7": "equal",
@@ -505,6 +588,13 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["12.6", "5.4"],
       cisv8: ["14.1", "14.2", "14.3", "14.4", "14.5", "14.6", "14.7", "14.8"],
       dpdp: ["Sec. 8(4)"],
+      iso42001: ["7.3"],
+      iso22301: ["7.3"],
+      nist800171: ["03.02.01"],
+      nis2: ["Art. 21(2)(g)"],
+      dora: ["Art. 13"],
+      glba: ["314.4(e)"],
+      nydfs: ["500.14"],
     },
     rel: {
       "nist80053:AT-2": "equal",
@@ -528,6 +618,12 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["PR.AT-02"],
       nist80053: ["AT-3", "IR-2"],
       pci4: ["6.2", "12.6"],
+      iso42001: ["7.2"],
+      iso22301: ["7.2"],
+      nist800171: ["03.02.02", "03.06.04"],
+      nis2: ["Art. 20(2)"],
+      glba: ["314.4(e)"],
+      nydfs: ["500.10"],
     },
     rel: {
       "nist80053:AT-3": "equal",
@@ -575,6 +671,9 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.308(a)(3)(ii)(C)"],
       pci4: ["8.2"],
       cisv8: ["6.2"],
+      nist800171: ["03.01.01", "03.09.02"],
+      nydfs: ["500.7"],
+      sox: ["ITGC-AC2"],
     },
   },
   {
@@ -593,6 +692,7 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["PR.IR-01"],
       nist80053: ["AC-17"],
       pci4: ["1.5"],
+      nist800171: ["03.01.12", "03.10.06"],
     },
     rel: {
       "soc2:CC6.7": "intersects_with",
@@ -619,6 +719,12 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["7.2", "7.3", "7.1"],
       cisv8: ["3.3", "6.8"],
       gdpr: ["Art. 32", "Art. 29"],
+      nist800171: ["03.01.02", "03.01.05"],
+      nis2: ["Art. 21(2)(i)"],
+      dora: ["Art. 9"],
+      glba: ["314.4(c)(1)"],
+      nydfs: ["500.7"],
+      cyberessentials: ["CE-4"],
     },
   },
   {
@@ -639,6 +745,9 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.312(a)(2)(i)", "164.308(a)(4)(ii)(C)"],
       pci4: ["8.2"],
       cisv8: ["5.1", "6.1"],
+      nist800171: ["03.01.01", "03.05.01", "03.05.05"],
+      sox: ["ITGC-AC1"],
+      cyberessentials: ["CE-4"],
     },
   },
   {
@@ -659,6 +768,13 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.308(a)(4)(ii)(C)", "164.308(a)(3)(ii)(B)"],
       pci4: ["7.2", "8.2"],
       cisv8: ["5.3"],
+      nist800171: ["03.01.01"],
+      glba: ["314.4(c)(1)"],
+      nydfs: ["500.7"],
+      sox: ["ITGC-AC3"],
+    },
+    rel: {
+      "sox:ITGC-AC3": "equal",
     },
   },
   {
@@ -679,8 +795,16 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.312(d)"],
       pci4: ["8.4", "8.5"],
       cisv8: ["6.3", "6.5", "6.4"],
+      nist800171: ["03.01.12", "03.05.01", "03.05.03", "03.05.04", "03.07.05"],
+      nis2: ["Art. 21(2)(j)"],
+      glba: ["314.4(c)(5)"],
+      nydfs: ["500.12"],
+      cyberessentials: ["CE-4"],
     },
     rel: {
+      "nydfs:500.12": "equal",
+      "glba:314.4(c)(5)": "equal",
+      "nist800171:03.05.03": "equal",
       "pci4:8.4": "equal",
     },
   },
@@ -702,6 +826,10 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.308(a)(5)(ii)(D)"],
       pci4: ["8.3"],
       cisv8: ["5.2"],
+      nist800171: ["03.01.08", "03.05.07", "03.05.11", "03.05.12"],
+      nydfs: ["500.7"],
+      sox: ["ITGC-AC5"],
+      cyberessentials: ["CE-2"],
     },
   },
   {
@@ -722,6 +850,10 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.312(a)(2)(ii)"],
       pci4: ["7.2", "8.6"],
       cisv8: ["5.4", "6.5"],
+      nist800171: ["03.01.06", "03.01.07", "03.04.05", "03.07.05"],
+      nydfs: ["500.7"],
+      sox: ["ITGC-AC4"],
+      cyberessentials: ["CE-4"],
     },
   },
   {
@@ -742,6 +874,7 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.312(a)(2)(iii)"],
       pci4: ["8.2"],
       cisv8: ["4.3"],
+      nist800171: ["03.01.10", "03.01.11", "03.13.09"],
     },
   },
   {
@@ -787,6 +920,10 @@ export const CONTROLS: UnifiedControl[] = [
       gdpr: ["Art. 32"],
       cisv8: ["3.6", "3.11"],
       dpdp: ["Sec. 8(5)"],
+      nist800171: ["03.08.09", "03.13.08", "03.13.11"],
+      nis2: ["Art. 21(2)(h)"],
+      glba: ["314.4(c)(3)"],
+      nydfs: ["500.15"],
     },
   },
   {
@@ -809,6 +946,11 @@ export const CONTROLS: UnifiedControl[] = [
       gdpr: ["Art. 32"],
       cisv8: ["3.10"],
       dpdp: ["Sec. 8(5)"],
+      nist800171: ["03.13.08", "03.13.11", "03.13.15"],
+      nis2: ["Art. 21(2)(h)", "Art. 21(2)(j)"],
+      dora: ["Art. 9"],
+      glba: ["314.4(c)(3)"],
+      nydfs: ["500.15"],
     },
   },
   {
@@ -827,6 +969,8 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["PR.DS-01"],
       nist80053: ["SC-12", "SC-13"],
       pci4: ["3.6", "3.7"],
+      nist800171: ["03.13.10", "03.13.11"],
+      nis2: ["Art. 21(2)(h)"],
     },
     rel: {
       "nist80053:SC-12": "equal",
@@ -874,6 +1018,7 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PE-2", "PE-3"],
       hipaa: ["164.310(a)(1)", "164.310(a)(2)(iii)", "164.310(a)(2)(ii)"],
       pci4: ["9.2", "9.3", "9.1"],
+      nist800171: ["03.08.02", "03.10.01", "03.10.07"],
     },
   },
   {
@@ -891,6 +1036,7 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["DE.CM-02"],
       nist80053: ["PE-6"],
       pci4: ["9.2"],
+      nist800171: ["03.10.02"],
     },
     rel: {
       "iso27001:A.7.4": "equal",
@@ -913,6 +1059,7 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["PR.IR-02"],
       nist80053: ["PE-9", "PE-13", "PE-14", "MA-2"],
       hipaa: ["164.310(a)(1)", "164.310(a)(2)(iv)"],
+      nist800171: ["03.07.04", "03.07.06", "03.10.08"],
     },
   },
   {
@@ -933,6 +1080,7 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.310(b)", "164.310(c)"],
       pci4: ["1.5", "9.5"],
       cisv8: ["3.6", "4.3", "4.5"],
+      nist800171: ["03.01.18", "03.04.12", "03.05.02", "03.08.07"],
     },
     rel: {
       "csf2:PR.PS-01": "intersects_with",
@@ -957,6 +1105,10 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["CM-2", "CM-6", "CM-7"],
       pci4: ["2.2", "2.1", "2.3"],
       cisv8: ["4.1", "4.2", "4.6", "4.7"],
+      nist800171: ["03.01.09", "03.01.16", "03.04.01", "03.04.02", "03.04.06", "03.13.04", "03.13.12"],
+      nis2: ["Art. 21(2)(g)"],
+      dora: ["Art. 9"],
+      cyberessentials: ["CE-2"],
     },
   },
   {
@@ -977,6 +1129,8 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.308(a)(5)(ii)(B)"],
       pci4: ["5.2", "5.3", "5.1"],
       cisv8: ["10.1", "10.2", "10.3"],
+      nist800171: ["03.14.02"],
+      cyberessentials: ["CE-5"],
     },
     rel: {
       "iso27001:A.8.7": "equal",
@@ -1000,6 +1154,8 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["PR.PS-05"],
       nist80053: ["CM-11", "CM-7"],
       cisv8: ["2.3"],
+      nist800171: ["03.04.08", "03.13.13"],
+      cyberessentials: ["CE-5"],
     },
   },
   {
@@ -1017,6 +1173,7 @@ export const CONTROLS: UnifiedControl[] = [
       soc2: ["A1.1"],
       csf2: ["PR.IR-04"],
       nist80053: ["SC-5"],
+      dora: ["Art. 7"],
     },
     rel: {
       "iso27001:A.8.6": "equal",
@@ -1043,6 +1200,11 @@ export const CONTROLS: UnifiedControl[] = [
       gdpr: ["Art. 5", "Art. 17"],
       cisv8: ["3.4", "3.5"],
       dpdp: ["Sec. 8(7)"],
+      nist800171: ["03.14.08"],
+      glba: ["314.4(c)(6)"],
+      nydfs: ["500.13"],
+      itspdi: ["Rule 5(4)"],
+      ccpa: ["1798.100(c)"],
     },
   },
   {
@@ -1061,6 +1223,7 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["PR.DS-01", "PR.DS-02"],
       nist80053: ["AC-4"],
       pci4: ["1.3"],
+      nist800171: ["03.01.03"],
     },
     rel: {
       "iso27001:A.8.12": "equal",
@@ -1083,6 +1246,7 @@ export const CONTROLS: UnifiedControl[] = [
       soc2: ["PI1.1", "PI1.2", "PI1.3", "PI1.4", "PI1.5"],
       csf2: ["PR.DS-10"],
       hipaa: ["164.312(c)(1)", "164.312(c)(2)"],
+      sox: ["ITGC-OP1"],
     },
     rel: {
       "csf2:PR.DS-10": "intersects_with",
@@ -1107,6 +1271,9 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["SC-7"],
       pci4: ["1.2", "1.3", "1.4", "1.1"],
       cisv8: ["4.4", "12.2"],
+      nist800171: ["03.01.16", "03.13.01", "03.13.06"],
+      dora: ["Art. 9"],
+      cyberessentials: ["CE-1"],
     },
   },
   {
@@ -1126,6 +1293,7 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["SC-7", "AC-4"],
       pci4: ["1.3", "1.4", "12.5"],
       cisv8: ["12.2"],
+      nist800171: ["03.01.03", "03.13.01"],
     },
   },
   {
@@ -1168,6 +1336,7 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["SC-5", "SC-7", "SI-4"],
       pci4: ["6.4", "11.5", "11.2"],
       cisv8: ["13.3"],
+      nist800171: ["03.13.01"],
     },
     rel: {
       "csf2:PR.IR-01": "intersects_with",
@@ -1191,6 +1360,7 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["SI-3"],
       pci4: ["5.4"],
       cisv8: ["9.5"],
+      nydfs: ["500.14"],
     },
     rel: {
       "pci4:5.4": "equal",
@@ -1218,6 +1388,10 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.312(b)"],
       pci4: ["10.2", "10.1"],
       cisv8: ["8.1", "8.2", "8.3"],
+      iso42001: ["A.6.2.8"],
+      nist800171: ["03.03.01", "03.03.02", "03.03.03"],
+      glba: ["314.4(c)(8)"],
+      nydfs: ["500.6"],
     },
   },
   {
@@ -1237,6 +1411,9 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["AU-9", "AU-11"],
       pci4: ["10.3", "10.5"],
       cisv8: ["8.10"],
+      nist800171: ["03.03.08"],
+      nydfs: ["500.6"],
+      certin: ["CI-(v)"],
     },
   },
   {
@@ -1257,6 +1434,10 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.308(a)(1)(ii)(D)", "164.308(a)(5)(ii)(C)"],
       pci4: ["10.4", "10.7", "11.5"],
       cisv8: ["8.11", "13.1"],
+      nist800171: ["03.03.04", "03.03.05", "03.03.06", "03.12.03", "03.14.06"],
+      dora: ["Art. 10"],
+      glba: ["314.4(c)(8)"],
+      nydfs: ["500.14"],
     },
   },
   {
@@ -1275,8 +1456,12 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["AU-8"],
       pci4: ["10.6"],
       cisv8: ["8.4"],
+      nist800171: ["03.03.07"],
+      certin: ["CI-(i)"],
     },
     rel: {
+      "certin:CI-(i)": "equal",
+      "nist800171:03.03.07": "equal",
       "iso27001:A.8.17": "equal",
       "nist80053:AU-8": "equal",
       "pci4:10.6": "equal",
@@ -1304,6 +1489,11 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["6.3", "11.3", "11.1"],
       cisv8: ["7.1", "7.5", "7.2"],
       gdpr: ["Art. 32"],
+      nist800171: ["03.11.02", "03.14.01"],
+      nis2: ["Art. 21(2)(e)"],
+      dora: ["Art. 24", "Art. 25"],
+      glba: ["314.4(d)"],
+      nydfs: ["500.5"],
     },
     rel: {
       "gdpr:Art. 32": "intersects_with",
@@ -1326,6 +1516,9 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["SI-2"],
       pci4: ["6.3"],
       cisv8: ["7.3", "2.2", "7.4", "9.1", "12.1"],
+      nist800171: ["03.14.01", "03.16.02"],
+      dora: ["Art. 9"],
+      cyberessentials: ["CE-3"],
     },
   },
   {
@@ -1345,8 +1538,12 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["CA-8"],
       pci4: ["11.4"],
       cisv8: ["18.1", "18.2"],
+      dora: ["Art. 24", "Art. 25", "Art. 26"],
+      glba: ["314.4(d)"],
+      nydfs: ["500.5"],
     },
     rel: {
+      "dora:Art. 26": "subset_of",
       "nist80053:CA-8": "equal",
       "pci4:11.4": "equal",
     },
@@ -1367,6 +1564,7 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["ID.RA-08"],
       nist80053: ["RA-5"],
       cisv8: ["16.2"],
+      nis2: ["Art. 21(2)(e)"],
     },
     rel: {
       "csf2:ID.RA-08": "equal",
@@ -1393,6 +1591,12 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["6.2", "6.1"],
       gdpr: ["Art. 25"],
       cisv8: ["16.1"],
+      iso42001: ["A.6.1.3", "A.6.2.2", "A.6.2.3"],
+      nist800171: ["03.16.01"],
+      nis2: ["Art. 21(2)(e)"],
+      glba: ["314.4(c)(4)"],
+      nydfs: ["500.8"],
+      sox: ["ITGC-SD1"],
     },
   },
   {
@@ -1412,6 +1616,7 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["SA-11", "SA-15"],
       pci4: ["6.2", "6.3"],
       cisv8: ["16.12"],
+      nydfs: ["500.8"],
     },
   },
   {
@@ -1431,6 +1636,10 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["CM-3", "CM-4"],
       pci4: ["6.5"],
       cisv8: ["4.1"],
+      nist800171: ["03.04.03", "03.04.04", "03.04.05"],
+      dora: ["Art. 9"],
+      glba: ["314.4(c)(7)"],
+      sox: ["ITGC-CM1", "ITGC-CM3"],
     },
   },
   {
@@ -1449,6 +1658,7 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["PR.IR-01"],
       nist80053: ["CM-2", "SA-11"],
       pci4: ["6.5"],
+      sox: ["ITGC-CM2"],
     },
   },
   {
@@ -1488,6 +1698,13 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["SR-2", "SA-9"],
       pci4: ["12.8"],
       cisv8: ["15.1", "15.2"],
+      iso42001: ["A.10.3"],
+      nist800171: ["03.01.20", "03.17.01"],
+      nis2: ["Art. 21(2)(d)"],
+      dora: ["Art. 28", "Art. 29"],
+      glba: ["314.4(f)"],
+      nydfs: ["500.11"],
+      seccyber: ["229.106(b)(1)"],
     },
   },
   {
@@ -1509,6 +1726,12 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["12.8"],
       gdpr: ["Art. 28"],
       dpdp: ["Sec. 8(2)"],
+      nist800171: ["03.16.03", "03.17.02", "03.17.03"],
+      nis2: ["Art. 21(2)(d)", "Art. 21(3)"],
+      dora: ["Art. 28", "Art. 29"],
+      glba: ["314.4(f)"],
+      nydfs: ["500.11"],
+      sox: ["ITGC-SO1"],
     },
   },
   {
@@ -1531,6 +1754,14 @@ export const CONTROLS: UnifiedControl[] = [
       gdpr: ["Art. 28"],
       cisv8: ["15.4"],
       dpdp: ["Sec. 8(2)"],
+      iso42001: ["A.10.2", "A.10.3"],
+      nist800171: ["03.12.05", "03.16.03", "03.17.03"],
+      nis2: ["Art. 21(2)(d)", "Art. 21(3)"],
+      dora: ["Art. 28", "Art. 30"],
+      glba: ["314.4(f)"],
+      nydfs: ["500.11"],
+      itspdi: ["Rule 6", "Rule 7"],
+      ccpa: ["1798.100(d)"],
     },
   },
   {
@@ -1575,6 +1806,12 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.308(a)(6)(ii)", "164.308(a)(6)(i)"],
       pci4: ["12.10"],
       cisv8: ["17.1", "17.4"],
+      iso22301: ["8.4.2.1"],
+      nist800171: ["03.06.01", "03.06.05"],
+      nis2: ["Art. 21(2)(b)"],
+      dora: ["Art. 17"],
+      glba: ["314.4(h)"],
+      nydfs: ["500.16"],
     },
     rel: {
       "nist80053:IR-8": "equal",
@@ -1599,6 +1836,13 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.308(a)(6)(ii)", "164.308(a)(6)(i)"],
       pci4: ["12.10"],
       cisv8: ["17.2", "17.4", "17.3"],
+      iso42001: ["A.3.3"],
+      nist800171: ["03.06.01", "03.06.02"],
+      nis2: ["Art. 21(2)(b)", "Art. 23(1)"],
+      dora: ["Art. 17", "Art. 18"],
+      nydfs: ["500.16"],
+      sox: ["ITGC-OP3"],
+      certin: ["CI-(ii)"],
     },
   },
   {
@@ -1627,7 +1871,7 @@ export const CONTROLS: UnifiedControl[] = [
     name: "Breach notification",
     domain: "Incident Response",
     description:
-      "Personal data breaches are notified to regulators, customers and affected individuals within statutory timelines (e.g. GDPR 72h, CERT-In 6h, HIPAA 60 days).",
+      "Security incidents and personal data breaches are notified to regulators, customers and affected individuals within statutory timelines — e.g. CERT-In 6h, NIS2 24h early warning / 72h, GDPR 72h, NYDFS 72h, DORA major-incident reports, SEC 8-K within 4 business days of materiality, HIPAA 60 days.",
     evidence: ["Breach notification procedure", "Regulator notification templates", "Breach register"],
     automatable: false,
     frequency: "Event-driven",
@@ -1641,6 +1885,15 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["12.10"],
       gdpr: ["Art. 33", "Art. 34"],
       dpdp: ["Sec. 8(6)"],
+      iso42001: ["A.8.3", "A.8.4"],
+      iso22301: ["8.4.3.1"],
+      nist800171: ["03.06.02"],
+      nis2: ["Art. 23(1)", "Art. 23(4)"],
+      dora: ["Art. 14", "Art. 19"],
+      glba: ["314.4(j)"],
+      nydfs: ["500.17"],
+      seccyber: ["8-K 1.05"],
+      certin: ["CI-(ii)"],
     },
   },
   {
@@ -1660,6 +1913,9 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["IR-3", "IR-4"],
       pci4: ["12.10"],
       cisv8: ["17.7", "17.8"],
+      nist800171: ["03.06.03"],
+      dora: ["Art. 13"],
+      nydfs: ["500.16"],
     },
     rel: {
       "soc2:CC4.2": "intersects_with",
@@ -1684,6 +1940,10 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["CP-2"],
       hipaa: ["164.308(a)(7)(ii)(B)", "164.308(a)(7)(ii)(C)", "164.308(a)(7)(ii)(E)", "164.308(a)(7)(i)", "164.310(a)(2)(i)"],
       pci4: ["12.10"],
+      iso22301: ["4.1", "4.2.1", "4.3.1", "4.4", "5.2.1", "5.3", "6.1.1", "6.2.1", "7.4", "7.5.1", "8.1", "8.2.2", "8.3.2", "8.3.4", "8.4.2.1", "8.4.4.1", "8.4.5"],
+      nis2: ["Art. 21(2)(c)"],
+      dora: ["Art. 11"],
+      nydfs: ["500.16"],
     },
   },
   {
@@ -1704,6 +1964,11 @@ export const CONTROLS: UnifiedControl[] = [
       hipaa: ["164.308(a)(7)(ii)(A)", "164.310(d)(2)(iv)"],
       cisv8: ["11.1", "11.2", "11.3", "11.4"],
       gdpr: ["Art. 32"],
+      nist800171: ["03.08.09"],
+      nis2: ["Art. 21(2)(c)"],
+      dora: ["Art. 12"],
+      nydfs: ["500.16"],
+      sox: ["ITGC-OP2"],
     },
   },
   {
@@ -1723,6 +1988,11 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["CP-4", "CP-10"],
       hipaa: ["164.308(a)(7)(ii)(D)"],
       cisv8: ["11.5"],
+      iso22301: ["8.5", "8.6"],
+      nis2: ["Art. 21(2)(c)"],
+      dora: ["Art. 11", "Art. 12", "Art. 24"],
+      nydfs: ["500.16"],
+      sox: ["ITGC-OP2"],
     },
   },
   {
@@ -1740,6 +2010,7 @@ export const CONTROLS: UnifiedControl[] = [
       soc2: ["A1.1", "A1.2"],
       csf2: ["PR.IR-03"],
       nist80053: ["CP-7"],
+      dora: ["Art. 7"],
     },
   },
   {
@@ -1757,6 +2028,8 @@ export const CONTROLS: UnifiedControl[] = [
       soc2: ["CC2.3", "CC7.5"],
       csf2: ["RC.CO-03", "RC.CO-04", "RS.MA-05"],
       nist80053: ["CP-2"],
+      iso22301: ["7.4", "8.4.3.1"],
+      dora: ["Art. 14"],
     },
     rel: {
       "csf2:RS.MA-05": "intersects_with",
@@ -1781,6 +2054,8 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PT-5"],
       gdpr: ["Art. 12", "Art. 13", "Art. 14"],
       dpdp: ["Sec. 5"],
+      itspdi: ["Rule 4", "Rule 5(3)"],
+      ccpa: ["1798.100(a)"],
     },
     rel: {
       "nist80053:PT-5": "equal",
@@ -1804,6 +2079,8 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PT-2", "PT-3", "PT-4"],
       gdpr: ["Art. 6", "Art. 7", "Art. 9", "Art. 5", "Art. 8", "Art. 10"],
       dpdp: ["Sec. 4", "Sec. 6", "Sec. 7", "Sec. 9"],
+      itspdi: ["Rule 5(1)", "Rule 5(2)", "Rule 5(7)", "Rule 6"],
+      ccpa: ["1798.135", "1798.120", "1798.121"],
     },
   },
   {
@@ -1823,6 +2100,8 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PT-3"],
       gdpr: ["Art. 12", "Art. 15", "Art. 16", "Art. 17", "Art. 20", "Art. 21", "Art. 18", "Art. 19", "Art. 22"],
       dpdp: ["Sec. 11", "Sec. 12", "Sec. 8(3)", "Sec. 14"],
+      itspdi: ["Rule 5(6)"],
+      ccpa: ["1798.130", "1798.105", "1798.106", "1798.110", "1798.115", "1798.125"],
     },
   },
   {
@@ -1842,6 +2121,8 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["RA-3", "SA-8"],
       gdpr: ["Art. 25", "Art. 35", "Art. 5", "Art. 36"],
       dpdp: ["Sec. 10", "Sec. 8(4)"],
+      itspdi: ["Rule 5(2)"],
+      ccpa: ["1798.100(c)", "1798.185(a)(15)"],
     },
   },
   {
@@ -1860,6 +2141,7 @@ export const CONTROLS: UnifiedControl[] = [
       csf2: ["GV.RR-02"],
       gdpr: ["Art. 37", "Art. 27", "Art. 38", "Art. 39"],
       dpdp: ["Sec. 8(10)", "Sec. 13", "Sec. 10", "Sec. 8(9)"],
+      itspdi: ["Rule 5(9)"],
     },
   },
   {
@@ -1879,6 +2161,8 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["CM-12"],
       gdpr: ["Art. 44", "Art. 46", "Art. 45", "Art. 49"],
       dpdp: ["Sec. 16"],
+      itspdi: ["Rule 7"],
+      certin: ["CI-(v)"],
     },
   },
 
@@ -1901,6 +2185,8 @@ export const CONTROLS: UnifiedControl[] = [
       pci4: ["12.4"],
       gdpr: ["Art. 24"],
       dpdp: ["Sec. 8(4)", "Sec. 8(1)"],
+      iso42001: ["4.1"],
+      iso22301: ["4.2.2"],
     },
   },
   {
@@ -1920,6 +2206,7 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["AU-11", "SI-12"],
       hipaa: ["164.316(b)(2)(i)"],
       pci4: ["10.5"],
+      nist800171: ["03.14.08"],
     },
     rel: {
       "csf2:PR.DS-01": "intersects_with",
@@ -1979,9 +2266,191 @@ export const CONTROLS: UnifiedControl[] = [
       soc2: ["CC2.1"],
       csf2: ["GV.OV-03"],
       nist80053: ["CA-7"],
+      iso22301: ["9.1"],
+      nis2: ["Art. 21(2)(f)"],
     },
     rel: {
       "nist80053:CA-7": "intersects_with",
+    },
+  },
+
+  // ───────────── AI Governance ─────────────
+  {
+    id: "AIG-01",
+    name: "AI governance policy, roles and AI literacy",
+    domain: "AI Governance",
+    description:
+      "An approved AI policy, aligned with other policies, defines responsible-AI principles, accountable roles and a channel to report concerns; staff who build, operate or use AI receive AI literacy training.",
+    evidence: ["Approved AI policy and review record", "AI RACI / accountable owners", "AI literacy training completion", "Concern-reporting channel"],
+    automatable: false,
+    frequency: "Annual",
+    scf: ["AAT-02", "AAT-05", "AAT-34.1", "AAT-06.1"],
+    map: {
+      iso42001: ["4.1", "4.2", "4.4", "5.1", "5.2", "5.3", "6.2", "7.2", "7.3", "7.4", "8.1", "A.2.2", "A.2.3", "A.2.4", "A.3.2", "A.3.3", "A.4.6", "A.9.2", "A.9.3"],
+      euaiact: ["Art. 4", "Art. 17"],
+    },
+    rel: {
+      "euaiact:Art. 4": "subset_of",
+      "iso42001:A.2.2": "equal",
+    },
+  },
+  {
+    id: "AIG-02",
+    name: "AI system inventory and risk classification",
+    domain: "AI Governance",
+    description:
+      "All AI systems and models developed, procured or used are inventoried with intended use, owner, resources and risk tier (prohibited, high-risk, limited, minimal); prohibited uses are blocked and high-risk systems are registered where required.",
+    evidence: ["AI system inventory", "Risk-tier classification records", "EU database registration (where applicable)"],
+    automatable: true,
+    frequency: "Quarterly",
+    scf: ["AAT-04", "AAT-11.2", "AAT-14.3", "AAT-20", "CPL-28"],
+    map: {
+      iso42001: ["4.1", "4.3", "A.4.2", "A.4.4", "A.4.5", "A.9.4"],
+      euaiact: ["Art. 5", "Art. 6", "Art. 16", "Art. 49"],
+    },
+  },
+  {
+    id: "AIG-03",
+    name: "AI risk and impact assessment",
+    domain: "AI Governance",
+    description:
+      "AI risks and impacts on individuals, groups and society (incl. fundamental rights, bias and safety) are assessed before deployment and at planned intervals, treated and documented.",
+    evidence: ["AI risk assessments and treatment plans", "AI impact assessments / FRIA", "AI risk acceptance sign-offs"],
+    automatable: false,
+    frequency: "Event-driven",
+    scf: ["AAT-09", "AAT-10", "AAT-10.1", "AAT-11", "AAT-11.1", "AAT-14.2"],
+    map: {
+      iso42001: ["6.1.1", "6.1.2", "6.1.3", "6.1.4", "8.2", "8.4", "A.5.2", "A.5.3", "A.5.4", "A.5.5"],
+      euaiact: ["Art. 9", "Art. 17", "Art. 27"],
+    },
+  },
+  {
+    id: "AIG-04",
+    name: "AI data governance and quality",
+    domain: "AI Governance",
+    description:
+      "Training, validation and test data are acquired lawfully, documented with provenance, checked for quality, representativeness and bias, and prepared under controlled processes.",
+    evidence: ["Dataset datasheets / provenance records", "Data quality and bias test results", "Data acquisition approvals"],
+    automatable: true,
+    frequency: "Event-driven",
+    scf: ["AAT-06", "AAT-18.1", "AAT-18.2", "AAT-28.8"],
+    map: {
+      iso42001: ["A.4.3", "A.7.2", "A.7.3", "A.7.4", "A.7.5", "A.7.6"],
+      euaiact: ["Art. 10", "Art. 17"],
+    },
+  },
+  {
+    id: "AIG-05",
+    name: "AI system lifecycle, validation and technical documentation",
+    domain: "AI Governance",
+    description:
+      "AI systems follow a documented lifecycle: requirements, design, verification and validation (accuracy, robustness, cybersecurity), controlled deployment and maintained technical documentation within a quality management system.",
+    evidence: ["Model cards / technical documentation", "TEVV and validation reports", "Deployment approvals", "QMS procedures"],
+    automatable: true,
+    frequency: "Event-driven",
+    scf: ["AAT-21", "AAT-25", "AAT-28", "AAT-28.9", "AAT-24.2", "AAT-18"],
+    map: {
+      iso42001: ["8.1", "A.4.4", "A.4.5", "A.6.1.2", "A.6.1.3", "A.6.2.2", "A.6.2.3", "A.6.2.4", "A.6.2.5", "A.6.2.7"],
+      euaiact: ["Art. 11", "Art. 15", "Art. 16", "Art. 17", "Art. 43", "Art. 53"],
+    },
+  },
+  {
+    id: "AIG-06",
+    name: "AI monitoring, logging and human oversight",
+    domain: "AI Governance",
+    description:
+      "Deployed AI systems automatically log events, are monitored for performance drift and misuse after deployment, and operate under defined human oversight with the ability to override or stop them.",
+    evidence: ["AI event logs", "Post-market / production monitoring dashboards", "Human oversight procedures and override records"],
+    automatable: true,
+    frequency: "Continuous",
+    scf: ["AAT-13.3", "AAT-31", "AAT-35", "AAT-35.1", "AAT-35.2", "AAT-36", "AAT-36.8"],
+    map: {
+      iso42001: ["9.1", "A.6.2.6", "A.6.2.8", "A.9.2", "A.9.4"],
+      euaiact: ["Art. 12", "Art. 14", "Art. 17", "Art. 26", "Art. 72"],
+    },
+  },
+  {
+    id: "AIG-07",
+    name: "AI transparency and information to users",
+    domain: "AI Governance",
+    description:
+      "Users, deployers and affected persons are informed when they interact with AI or receive AI-generated content, and receive instructions for use, capabilities and limitations.",
+    evidence: ["AI disclosure notices / content labelling", "Instructions for use", "User-facing system documentation"],
+    automatable: false,
+    frequency: "Event-driven",
+    scf: ["AAT-16", "AAT-24.1", "AAT-35.7", "AAT-35.8"],
+    map: {
+      iso42001: ["A.8.2", "A.8.5"],
+      euaiact: ["Art. 13", "Art. 26", "Art. 50", "Art. 53"],
+    },
+  },
+  {
+    id: "AIG-08",
+    name: "AI supplier and customer responsibilities",
+    domain: "AI Governance",
+    description:
+      "Responsibilities across the AI value chain (model providers, suppliers, customers) are allocated in contracts, and third-party AI components are assessed before use.",
+    evidence: ["AI supplier assessments", "Contracts allocating AI responsibilities", "Customer-facing AI terms"],
+    automatable: false,
+    frequency: "Event-driven",
+    scf: ["AAT-04"],
+    map: {
+      iso42001: ["A.10.2", "A.10.3", "A.10.4"],
+    },
+  },
+  {
+    id: "AIG-09",
+    name: "AI incident and serious-incident reporting",
+    domain: "AI Governance",
+    description:
+      "AI incidents and errors are recorded, root-caused and, where they are serious incidents, reported to authorities and affected parties within statutory timelines.",
+    evidence: ["AI incident register", "Serious-incident reports", "Root-cause analyses"],
+    automatable: false,
+    frequency: "Event-driven",
+    scf: ["AAT-33.4", "AAT-36.9", "AAT-36.10"],
+    map: {
+      iso42001: ["A.8.3", "A.8.4"],
+      euaiact: ["Art. 17", "Art. 73"],
+    },
+    rel: {
+      "euaiact:Art. 73": "equal",
+    },
+  },
+
+  // ───────────── Regulatory obligations ─────────────
+  {
+    id: "CMP-06",
+    name: "Regulatory certifications, attestations and filings",
+    domain: "Compliance",
+    description:
+      "Required compliance certifications, attestations and regulatory filings (e.g. SOX 302/404, NYDFS annual certification, SEC cyber disclosures, EU registrations and conformity assessments) are owned, evidenced and submitted on time.",
+    evidence: ["Compliance filing calendar", "Signed certifications / attestations", "Submission receipts"],
+    automatable: false,
+    frequency: "Annual",
+    scf: ["CPL-04.2", "CPL-04.3"],
+    map: {
+      nis2: ["Art. 27"],
+      euaiact: ["Art. 16", "Art. 43"],
+      nydfs: ["500.17"],
+      seccyber: ["8-K 1.05", "229.106(b)(1)", "229.106(b)(2)", "229.106(c)(1)", "229.106(c)(2)"],
+      sox: ["302", "404(a)", "404(b)"],
+    },
+    rel: {
+      "sox:302": "subset_of",
+    },
+  },
+  {
+    id: "CMP-07",
+    name: "Statutory customer and subscriber record retention",
+    domain: "Compliance",
+    description:
+      "Where law requires it (e.g. cloud, VPN, data-centre and virtual-asset providers in India), validated customer identity, subscription and transaction records are collected and retained for the statutory period.",
+    evidence: ["KYC / subscriber record procedure", "Retention configuration", "Sample records"],
+    automatable: true,
+    frequency: "Continuous",
+    scf: ["CPL-02"],
+    map: {
+      certin: ["CI-(vi)", "CI-(vii)"],
     },
   },
 ];

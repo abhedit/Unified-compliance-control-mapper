@@ -52,6 +52,9 @@ CREATE TABLE IF NOT EXISTS activity (
   id INTEGER PRIMARY KEY AUTOINCREMENT, org_id TEXT NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
   user_name TEXT, action TEXT NOT NULL, detail TEXT, created_at INTEGER NOT NULL
 );
+CREATE TABLE IF NOT EXISTS org_profile (
+  org_id TEXT PRIMARY KEY REFERENCES orgs(id) ON DELETE CASCADE, profile_json TEXT NOT NULL, updated_at INTEGER NOT NULL
+);
 CREATE INDEX IF NOT EXISTS idx_activity_org ON activity(org_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_evidence_org ON evidence(org_id, control_id);
 `;

@@ -1,5 +1,26 @@
 # Mapping changelog: Unified Control Library
 
+## 2026.11 (extended coverage)
+
+**14 new frameworks, 9 → 23**
+- **AI governance:** ISO/IEC 42001:2023 (clauses and all 38 Annex A controls) and the EU AI Act.
+- **Resilience:** ISO 22301:2019 and DORA.
+- **EU:** the NIS2 Directive.
+- **UK:** Cyber Essentials.
+- **US:** NIST SP 800-171 Rev. 3 (all 97 requirements, official NIST OSCAL titles), the GLBA Safeguards Rule, NYDFS 23 NYCRR 500, the SEC cybersecurity disclosure rules, SOX §302/§404 with ITGC domains, and CCPA/CPRA.
+- **India:** the CERT-In Directions 2022 and the IT (SPDI) Rules 2011.
+
+**New controls (11)**
+- AIG-01 to AIG-09 cover AI governance: policy and literacy, inventory and risk tier, risk and impact assessment, data governance, lifecycle and documentation, monitoring and human oversight, transparency, the AI value chain, and serious-incident reporting.
+- CMP-06 covers regulatory certifications and filings.
+- CMP-07 covers statutory subscriber record retention.
+- INC-04 now lists the CERT-In, NIS2, NYDFS, DORA and SEC notification deadlines.
+
+**Process**
+- 540 new links. Where SCF covers the regime, they were derived from SCF anchors; every proposal was then reviewed per requirement, and broad program-level proposals were rejected as over-mapping. Regimes without a reference crosswalk were mapped by an analyst.
+- The library now stands at 1,594 links, with 1,037 (65%) corroborated by SCF 2026.3.
+- New applicability assessment, which shows mandatory, expected and recommended frameworks for a given company profile.
+
 ## 2026.11
 
 **Methodology**
