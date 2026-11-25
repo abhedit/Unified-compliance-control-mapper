@@ -1,8 +1,10 @@
-# abhedit UCM — Unified Compliance Control Mapper
+# Abhedit Control Mapper
+
+*Part of the Abhedit platform for security, privacy, compliance and AI governance.*
 
 **Implement a control once. Comply with every framework.**
 
-abhedit UCM is a multi-tenant SaaS application that maps one control across every compliance regime a company typically has to follow. It ships with a curated **Unified Control Library** (v2026.11) of **103 controls**, linked by **1,594 typed mapping links** to **998 requirements** across **23 frameworks** in India, the US, the EU, the UK and globally.
+Abhedit Control Mapper is a multi-tenant SaaS application that maps one control across every compliance regime a company typically has to follow. It ships with a curated **Unified Control Library** (v2026.11) of **103 controls**, linked by **1,594 typed mapping links** to **998 requirements** across **23 frameworks** in India, the US, the EU, the UK and globally.
 
 It also includes an **applicability assessment** (`/assess` publicly, *Obligations* in-app). It turns a short company profile into the list of **mandatory**, **customer-expected** and **recommended** frameworks, with the reason for each, and the number of unified controls that cover them all.
 
@@ -48,7 +50,7 @@ The library is built with the procedure enterprise GRC programmes use. The full 
 | **Secureframe** | A pre-built control library mapped to frameworks, with custom controls and tests. | A custom-control builder with mapping suggestions. |
 | **Drata** | Pre-mapped controls aligned to ISO 27001:2022. Vendor estimates put SOC 2 / ISO overlap at 40–85%. | An overlap matrix and crosswalk, to show "how much of the next framework you already have". |
 
-**How abhedit UCM differs:**
+**How Abhedit Control Mapper differs:**
 - **Transparent mapping.** The free public mapper at `/map` shows the whole crosswalk before anyone buys, and each mapping has a shareable link.
 - **India coverage.** The DPDP Act sits next to GDPR, HIPAA and PCI DSS.
 - **Leverage-first guidance.** The dashboard ranks open controls by how many in-scope requirements each one closes.
@@ -74,6 +76,22 @@ npm run validate-data
 ```
 
 The SCF workbook is free from the SCF Council (CC BY-ND 4.0). It is used only as an audit reference and is not redistributed here.
+
+## Branding
+
+The UI follows the ABHEDIT brand system used on the Abhedit website:
+
+| Token | Value | Use |
+|---|---|---|
+| Brand blue | `#047FFF` | Primary buttons, logo mark, highlights |
+| Brand blue (hover / text) | `#036DE0` | Hover states and small text on white (WCAG AA contrast) |
+| Ink | `#0F172A` | Headings, dark sections, app sidebar, footer |
+| Ink soft | `#1E293B` | Cards on dark backgrounds |
+| Muted / line | `#475569` / `#E2E8F0` | Body copy and borders |
+| Typeface | Arial, Helvetica | All text; tight-tracked medium-weight display headings |
+
+- **Logo assets** (`public/brand/`): the official Abhedit wordmark, a white-wordmark variant for dark backgrounds, and the shield mark, which is also the favicon at `src/app/icon.svg`.
+- **Design tokens:** live in `src/app/globals.css` (`@theme`) together with the brand utilities `btn-dark`, `eyebrow`, `display` and `text-gradient`.
 
 ## Tech stack
 
@@ -106,7 +124,7 @@ Production:
 ```bash
 npm run build && npm start
 # or
-docker build -t abhedit-ucm . && docker run -p 3000:3000 -v ucm-data:/app/data abhedit-ucm
+docker build -t abhedit-control-mapper . && docker run -p 3000:3000 -v ucm-data:/app/data abhedit-control-mapper
 ```
 
 Environment variables (see `.env.example`):

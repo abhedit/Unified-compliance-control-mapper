@@ -25,7 +25,7 @@ export default function NavLinks() {
             key={href}
             href={href}
             className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap ${
-              active ? "bg-brand-50 text-brand-700" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              active ? "bg-brand-600 text-white" : "text-slate-300 hover:bg-ink-soft hover:text-white"
             }`}
           >
             <span className="w-4 text-center opacity-70">{icon}</span>

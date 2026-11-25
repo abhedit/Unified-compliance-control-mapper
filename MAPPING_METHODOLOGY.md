@@ -1,6 +1,6 @@
-# Mapping methodology: abhedit Unified Control Library
+# Mapping methodology: Abhedit Unified Control Library
 
-This document describes how abhedit UCM builds, maps, verifies and maintains its control library. The procedure follows the practices used by enterprise GRC programmes and the large compliance-automation platforms:
+This document describes how Abhedit Control Mapper builds, maps, verifies and maintains its control library. The procedure follows the practices used by enterprise GRC programmes and the large compliance-automation platforms:
 
 - **one common control framework**
 - **standards-based relationship typing**

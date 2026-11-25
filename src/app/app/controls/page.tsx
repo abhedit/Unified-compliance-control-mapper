@@ -73,7 +73,7 @@ export default async function ControlsPage({ searchParams }: { searchParams: Pro
         </table>
       </div>
       <p className="mt-3 text-xs text-slate-500">
-        Showing {rows.length} controls in scope of your frameworks. <Link href="/app/controls?scope=all" className="font-semibold text-brand-600">Show full library</Link>
+        Showing {rows.length} controls in scope of your frameworks. <Link href="/app/controls?scope=all" className="font-semibold text-brand-700">Show full library</Link>
       </p>
     </div>
   );

@@ -43,7 +43,7 @@ export default async function ControlDetail({ params, searchParams }: { params: 
                 <p className="mt-1 text-xs text-slate-500">
                   Anchored to Secure Controls Framework controls{" "}
                   {lib.scf.map((a) => <code key={a} className="mr-1 rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px] text-slate-700">{a}</code>)}
-                  — used to independently corroborate this control&apos;s mappings (<Link href="/methodology" className="text-brand-600 hover:underline">methodology</Link>).
+                  — used to independently corroborate this control&apos;s mappings (<Link href="/methodology" className="text-brand-700 hover:underline">methodology</Link>).
                 </p>
               </>
             )}

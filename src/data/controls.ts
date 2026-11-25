@@ -36,7 +36,7 @@ export type Domain =
  */
 export type Relationship = "equal" | "subset_of" | "superset_of" | "intersects_with";
 
-/** Version of the abhedit Unified Control Library mapping set. */
+/** Version of the Abhedit Unified Control Library mapping set. */
 export const LIBRARY_VERSION = "2026.11";
 
 export interface UnifiedControl {

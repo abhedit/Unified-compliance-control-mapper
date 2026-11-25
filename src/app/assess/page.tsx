@@ -1,4 +1,5 @@
 import MarketingNav from "@/components/MarketingNav";
+import SiteFooter from "@/components/SiteFooter";
 import ApplicabilityWizard from "@/components/ApplicabilityWizard";
 
 export const metadata = { title: "Which compliance frameworks apply to my company?" };
@@ -15,6 +16,7 @@ export default function AssessPage() {
         </p>
         <ApplicabilityWizard mode="public" />
       </main>
+      <SiteFooter />
     </div>
   );
 }

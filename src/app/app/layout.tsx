@@ -8,20 +8,20 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const s = await requireSession();
   return (
     <div className="min-h-screen lg:flex">
-      <aside className="border-b border-slate-200 bg-white lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-60 lg:shrink-0 lg:flex-col lg:border-r lg:border-b-0">
+      <aside className="bg-ink text-slate-300 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:shrink-0 lg:flex-col">
         <div className="flex items-center justify-between px-4 py-4">
-          <Link href="/app"><Logo /></Link>
+          <Link href="/app" aria-label="Abhedit Control Mapper home"><Logo dark /></Link>
         </div>
-        <div className="mx-3 mb-3 rounded-lg bg-slate-50 px-3 py-2">
-          <div className="truncate text-sm font-semibold">{s.orgName}</div>
-          <div className="text-xs text-slate-500 capitalize">{s.plan} plan</div>
+        <div className="mx-3 mb-3 rounded bg-ink-soft px-3 py-2">
+          <div className="truncate text-sm font-semibold text-white">{s.orgName}</div>
+          <div className="text-xs text-slate-400 capitalize">{s.plan} plan</div>
         </div>
         <NavLinks />
-        <div className="hidden border-t border-slate-200 p-3 lg:mt-auto lg:block">
-          <div className="truncate text-sm font-medium">{s.name}</div>
+        <div className="hidden border-t border-white/10 p-3 lg:mt-auto lg:block">
+          <div className="truncate text-sm font-medium text-white">{s.name}</div>
           <div className="truncate text-xs text-slate-500">{s.email}</div>
           <form action={logoutAction}>
-            <button className="mt-2 text-xs font-semibold text-slate-500 hover:text-slate-800">Sign out</button>
+            <button className="mt-2 text-xs font-semibold text-slate-400 hover:text-white">Sign out</button>
           </form>
         </div>
       </aside>

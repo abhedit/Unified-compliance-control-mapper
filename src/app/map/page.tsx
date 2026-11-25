@@ -1,5 +1,6 @@
 import Link from "next/link";
 import MarketingNav from "@/components/MarketingNav";
+import SiteFooter from "@/components/SiteFooter";
 import MapperExplorer from "@/components/MapperExplorer";
 import { CONTROLS } from "@/data/controls";
 import { parseSelection } from "@/lib/selection";
@@ -23,6 +24,7 @@ export default async function PublicMapper({ searchParams }: { searchParams: Pro
         </div>
         <MapperExplorer controls={CONTROLS} initial={initial} basePath="/map" />
       </main>
+      <SiteFooter />
     </div>
   );
 }

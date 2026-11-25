@@ -67,7 +67,7 @@ export function ReqStatusBadge({ status }: { status: ReqStatus }) {
   return <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${cls}`}>{label}</span>;
 }
 
-export function Progress({ value, color = "#4f46e5", className = "" }: { value: number; color?: string; className?: string }) {
+export function Progress({ value, color = "#047fff", className = "" }: { value: number; color?: string; className?: string }) {
   return (
     <div className={`h-2 w-full overflow-hidden rounded-full bg-slate-100 ${className}`}>
       <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(0, Math.min(100, value))}%`, background: color }} />
@@ -85,22 +85,24 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
   );
 }
 
-export function Logo({ className = "" }: { className?: string }) {
+/** ABHEDIT logo lockup: official wordmark + product name. */
+export function Logo({ className = "", dark = false, product = true }: { className?: string; dark?: boolean; product?: boolean }) {
   return (
-    <span className={`inline-flex items-center gap-2 font-bold tracking-tight ${className}`}>
-      <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden>
-        <rect width="32" height="32" rx="8" fill="#4f46e5" />
-        <circle cx="10" cy="11" r="3" fill="#fff" />
-        <circle cx="22" cy="11" r="3" fill="#c7d2fe" />
-        <circle cx="10" cy="22" r="3" fill="#c7d2fe" />
-        <circle cx="22" cy="22" r="3" fill="#fff" />
-        <path d="M10 11 L22 22 M22 11 L10 22" stroke="#fff" strokeWidth="1.6" />
-      </svg>
-      <span>
-        abhedit<span className="text-brand-600"> UCM</span>
-      </span>
+    <span className={`inline-flex items-center gap-2.5 ${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={dark ? "/brand/abhedit-logo-white.svg" : "/brand/abhedit-logo.svg"} alt="Abhedit" width={118} height={28} className="h-7 w-auto" />
+      {product && (
+        <span className={`hidden border-l pl-2.5 text-sm font-semibold tracking-tight whitespace-nowrap sm:inline ${dark ? "border-white/25 text-slate-200" : "border-slate-300 text-slate-600"}`}>
+          Control Mapper
+        </span>
+      )}
     </span>
   );
+}
+
+export function BrandMark({ className = "h-6 w-6" }: { className?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src="/brand/abhedit-mark.svg" alt="" aria-hidden className={className} />;
 }
 
 export function Empty({ children }: { children: ReactNode }) {

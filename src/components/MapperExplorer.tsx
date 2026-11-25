@@ -176,7 +176,7 @@ export default function MapperExplorer({ controls, frameworks, statuses, initial
                   </>
                 ) : (
                   <>
-                    <div className="text-xs font-semibold tracking-wide text-brand-600 uppercase">Unified control · {byId[sel.id]?.domain}</div>
+                    <div className="text-xs font-semibold tracking-wide text-brand-700 uppercase">Unified control · {byId[sel.id]?.domain}</div>
                     <h2 className="mt-1 text-xl font-bold">
                       <span className="font-mono">{sel.id}</span> · {byId[sel.id]?.name}
                     </h2>
@@ -243,7 +243,7 @@ export default function MapperExplorer({ controls, frameworks, statuses, initial
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-semibold text-slate-600">Relationship (NIST IR 8477):</span>
               {(["equal", "subset_of", "superset_of", "intersects_with"] as const).map((r) => <RelBadge key={r} rel={r} />)}
-              <Link href="/methodology" className="font-semibold text-brand-600 hover:underline">Methodology →</Link>
+              <Link href="/methodology" className="font-semibold text-brand-700 hover:underline">Methodology →</Link>
             </div>
             {sel.kind === "req" && hiddenWeak > 0 && (
               <label className="flex items-center gap-1.5">

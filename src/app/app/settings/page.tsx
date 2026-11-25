@@ -18,7 +18,7 @@ export default async function SettingsPage() {
       <PageHeader title="Settings" subtitle={`Workspace: ${session.orgName}`} />
       <form action={saveFrameworksAction} className="card p-5">
         <h2 className="font-semibold">Frameworks in scope</h2>
-        <p className="text-xs text-slate-500">Readiness, gaps and the mapper are scoped to these frameworks. Control status is shared across all of them. <Link href="/app/obligations" className="font-semibold text-brand-600">Work out what applies →</Link></p>
+        <p className="text-xs text-slate-500">Readiness, gaps and the mapper are scoped to these frameworks. Control status is shared across all of them. <Link href="/app/obligations" className="font-semibold text-brand-700">Work out what applies →</Link></p>
         {REGIONS.map((region) => (
         <div key={region} className="mt-4">
         <h3 className="mb-2 text-xs font-semibold tracking-wide text-slate-500 uppercase">{region}</h3>
@@ -37,7 +37,7 @@ export default async function SettingsPage() {
 
       <div className="card mt-6 p-5">
         <h2 className="font-semibold">API keys</h2>
-        <p className="mb-3 text-xs text-slate-500">Use workspace keys to read coverage and gap data from the REST API. <Link href="/docs" className="font-semibold text-brand-600">API docs →</Link></p>
+        <p className="mb-3 text-xs text-slate-500">Use workspace keys to read coverage and gap data from the REST API. <Link href="/docs" className="font-semibold text-brand-700">API docs →</Link></p>
         <ApiKeyForm />
         <table className="table-base mt-4">
           <thead><tr><th>Name</th><th>Key</th><th>Created</th><th>Last used</th><th /></tr></thead>

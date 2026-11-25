@@ -1,13 +1,14 @@
 import MarketingNav from "@/components/MarketingNav";
+import SiteFooter from "@/components/SiteFooter";
 
 export const metadata = { title: "API documentation" };
 
 const ENDPOINTS = [
-  { method: "GET", path: "/api/v1/frameworks", auth: "Public", desc: "List supported frameworks. Add ?include=requirements for every requirement.", example: "curl https://ucm.abhedit.com/api/v1/frameworks" },
-  { method: "GET", path: "/api/v1/controls", auth: "Public", desc: "Unified control library with mappings. Filter with ?framework=pci4.", example: "curl https://ucm.abhedit.com/api/v1/controls?framework=pci4" },
-  { method: "GET", path: "/api/v1/map", auth: "Public", desc: "Map one requirement (?framework=&code=) or one control (?control=) across all frameworks.", example: 'curl "https://ucm.abhedit.com/api/v1/map?framework=iso27001&code=A.8.5"' },
-  { method: "GET", path: "/api/v1/workspace/coverage", auth: "API key", desc: "Readiness and per-requirement status for your in-scope frameworks (or ?framework=).", example: 'curl -H "Authorization: Bearer ucm_live_…" https://ucm.abhedit.com/api/v1/workspace/coverage?framework=soc2' },
-  { method: "GET", path: "/api/v1/workspace/controls", auth: "API key", desc: "All library and custom controls with your status and owners.", example: 'curl -H "Authorization: Bearer ucm_live_…" https://ucm.abhedit.com/api/v1/workspace/controls' },
+  { method: "GET", path: "/api/v1/frameworks", auth: "Public", desc: "List supported frameworks. Add ?include=requirements for every requirement.", example: "curl https://app.abhedit.com/control-mapper/api/v1/frameworks" },
+  { method: "GET", path: "/api/v1/controls", auth: "Public", desc: "Unified control library with mappings. Filter with ?framework=pci4.", example: "curl https://app.abhedit.com/control-mapper/api/v1/controls?framework=pci4" },
+  { method: "GET", path: "/api/v1/map", auth: "Public", desc: "Map one requirement (?framework=&code=) or one control (?control=) across all frameworks.", example: 'curl "https://app.abhedit.com/control-mapper/api/v1/map?framework=iso27001&code=A.8.5"' },
+  { method: "GET", path: "/api/v1/workspace/coverage", auth: "API key", desc: "Readiness and per-requirement status for your in-scope frameworks (or ?framework=).", example: 'curl -H "Authorization: Bearer ucm_live_…" https://app.abhedit.com/control-mapper/api/v1/workspace/coverage?framework=soc2' },
+  { method: "GET", path: "/api/v1/workspace/controls", auth: "API key", desc: "All library and custom controls with your status and owners.", example: 'curl -H "Authorization: Bearer ucm_live_…" https://app.abhedit.com/control-mapper/api/v1/workspace/controls' },
 ];
 
 export default function Docs() {
@@ -33,6 +34,7 @@ export default function Docs() {
           ))}
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

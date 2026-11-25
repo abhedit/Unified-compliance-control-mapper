@@ -40,7 +40,7 @@ export default async function Dashboard() {
       )}
       {frameworks.length === 0 ? (
         <Empty>
-          No frameworks enabled yet. <Link className="font-semibold text-brand-600" href="/app/settings">Choose frameworks →</Link>
+          No frameworks enabled yet. <Link className="font-semibold text-brand-700" href="/app/settings">Choose frameworks →</Link>
         </Empty>
       ) : (
         <>
@@ -113,7 +113,7 @@ export default async function Dashboard() {
                           const v = Math.round(overlap(controls, b, a) * 100);
                           return (
                             <td key={b} className="p-1">
-                              <Link href={`/app/crosswalk?a=${a}&b=${b}`} className="block rounded p-2 text-center text-xs font-semibold" style={{ background: `rgba(79,70,229,${0.08 + v / 140})`, color: v > 55 ? "#fff" : "#312e81" }}>
+                              <Link href={`/app/crosswalk?a=${a}&b=${b}`} className="block rounded p-2 text-center text-xs font-semibold" style={{ background: `rgba(4,127,255,${0.08 + v / 130})`, color: v > 55 ? "#fff" : "#0f172a" }}>
                                 {v}%
                               </Link>
                             </td>

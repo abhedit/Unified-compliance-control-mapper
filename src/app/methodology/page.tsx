@@ -1,5 +1,6 @@
 import Link from "next/link";
 import MarketingNav from "@/components/MarketingNav";
+import SiteFooter from "@/components/SiteFooter";
 import { RelBadge } from "@/components/ui";
 import { CONTROLS, LIBRARY_VERSION } from "@/data/controls";
 import { FRAMEWORKS } from "@/data/frameworks";
@@ -41,7 +42,7 @@ export default function Methodology() {
         <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">Library v{LIBRARY_VERSION}</span>
         <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">How we map controls</h1>
         <p className="mt-3 max-w-3xl text-lg text-slate-600">
-          abhedit UCM follows the procedure enterprise GRC teams use: one common control framework, mapping relationships typed per{" "}
+          Abhedit Control Mapper follows the procedure enterprise GRC teams use: one common control framework, mapping relationships typed per{" "}
           <b>NIST IR 8477</b>, independent corroboration against the <b>{REFERENCE.name}</b>, and automated integrity gates on every change.
         </p>
 
@@ -63,7 +64,7 @@ export default function Methodology() {
         <ol className="mt-4 grid gap-4 md:grid-cols-2">
           {STEPS.map(([t, d], i) => (
             <li key={t} className="card p-5">
-              <div className="text-xs font-semibold text-brand-600">STEP {i + 1}</div>
+              <div className="text-xs font-semibold text-brand-700">STEP {i + 1}</div>
               <div className="mt-1 font-semibold">{t}</div>
               <p className="mt-1 text-sm text-slate-600">{d}</p>
             </li>
@@ -88,7 +89,7 @@ export default function Methodology() {
           </table>
         </div>
 
-        <h2 className="mt-12 text-xl font-bold">Coverage by framework</h2>
+        <h2 id="coverage" className="mt-12 text-xl font-bold">Coverage by framework</h2>
         <div className="card mt-4 overflow-x-auto">
           <table className="table-base">
             <thead><tr><th>Framework</th><th>Version</th><th className="text-right">Requirements</th><th className="text-right">Single-control coverage</th><th className="text-right">Links</th><th className="text-right">SCF-corroborated</th></tr></thead>
@@ -120,9 +121,10 @@ export default function Methodology() {
           References: NIST IR 8477 (Mapping Relationships Between Documentary Standards, Regulations, Frameworks, and Guidelines); NIST OLIR; NIST SP 800-53 Rev. 5 OSCAL catalog;
           {" "}{REFERENCE.name} {REFERENCE.version} (CC BY-ND 4.0, used as a reference only). Mappings support planning and evidence reuse and are not an audit opinion or certification.
           Requirement titles are paraphrased; licensed standards must be obtained from their publishers.{" "}
-          <Link href="/map" className="font-semibold text-brand-600">Explore the mapper →</Link>
+          <Link href="/map" className="font-semibold text-brand-700">Explore the mapper →</Link>
         </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

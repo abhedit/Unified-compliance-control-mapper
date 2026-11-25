@@ -24,7 +24,7 @@ export function LoginForm() {
       </div>
       <button className="btn-primary w-full" disabled={pending}>{pending ? "Signing in…" : "Sign in"}</button>
       <p className="text-center text-sm text-slate-500">
-        New to abhedit UCM? <Link href="/signup" className="font-semibold text-brand-600">Create a workspace</Link>
+        New to Abhedit Control Mapper? <Link href="/signup" className="font-semibold text-brand-700">Create a workspace</Link>
       </p>
     </form>
   );
@@ -55,7 +55,7 @@ export function SignupForm({ preselect }: { preselect?: string[] }) {
         <p className="mt-1 text-xs text-slate-500">At least 10 characters.</p>
       </div>
       <fieldset>
-        <legend className="label">Which frameworks are you working towards? <a href="/assess" className="font-normal text-brand-600 hover:underline">Not sure? Check what applies →</a></legend>
+        <legend className="label">Which frameworks are you working towards? <a href="/assess" className="font-normal text-brand-700 hover:underline">Not sure? Check what applies →</a></legend>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {FRAMEWORKS.map((f) => (
             <label key={f.id} className="flex items-center gap-2 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm hover:bg-slate-50">
@@ -67,7 +67,7 @@ export function SignupForm({ preselect }: { preselect?: string[] }) {
       </fieldset>
       <button className="btn-primary w-full" disabled={pending}>{pending ? "Creating workspace…" : "Create workspace"}</button>
       <p className="text-center text-sm text-slate-500">
-        Already have an account? <Link href="/login" className="font-semibold text-brand-600">Sign in</Link>
+        Already have an account? <Link href="/login" className="font-semibold text-brand-700">Sign in</Link>
       </p>
     </form>
   );
