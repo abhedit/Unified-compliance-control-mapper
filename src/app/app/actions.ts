@@ -21,7 +21,10 @@ export async function updateControlAction(form: FormData) {
   assertControl(s.orgId, id);
   const status = String(form.get("status")) as ControlStatus;
   if (!STATUSES.includes(status)) throw new Error("Invalid status");
-  upsertControlState(s.orgId, id, { status, owner: String(form.get("owner") ?? "").slice(0, 120), notes: String(form.get("notes") ?? "").slice(0, 4000) }, s.name);
+  const notes = String(form.get("notes") ?? "").trim().slice(0, 4000);
+  // ISO/IEC 27001 6.1.3(d): exclusions in the Statement of Applicability must be justified.
+  if (status === "not_applicable" && notes.length < 10) redirect(`/app/controls/${id}?error=justification`);
+  upsertControlState(s.orgId, id, { status, owner: String(form.get("owner") ?? "").slice(0, 120), notes }, s.name);
   logActivity(s.orgId, s.name, "control.updated", `${id} → ${status}`);
   revalidatePath("/app", "layout");
 }
@@ -31,6 +34,7 @@ export async function quickStatusAction(controlId: string, status: ControlStatus
   assertControl(s.orgId, controlId);
   if (!STATUSES.includes(status)) throw new Error("Invalid status");
   const prev = controlStates(s.orgId)[controlId];
+  if (status === "not_applicable" && (prev?.notes ?? "").trim().length < 10) throw new Error("A justification is required to mark a control Not applicable.");
   upsertControlState(s.orgId, controlId, { status, owner: prev?.owner ?? "", notes: prev?.notes ?? "" }, s.name);
   logActivity(s.orgId, s.name, "control.updated", `${controlId} → ${status}`);
   revalidatePath("/app", "layout");

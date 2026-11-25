@@ -4,12 +4,13 @@ import { loadWorkspace } from "@/lib/workspace";
 import { evidenceFor, STATUSES } from "@/lib/org";
 import { CONTROL_BY_ID } from "@/data/controls";
 import { FRAMEWORKS, type FrameworkId } from "@/data/frameworks";
-import { findRequirement, type ControlStatus } from "@/lib/mapper";
-import { PageHeader, StatusBadge, fmtDate, statusLabel } from "@/components/ui";
+import { findRequirement, isCorroborated, relationship, type ControlStatus } from "@/lib/mapper";
+import { PageHeader, ProvenanceMark, RelBadge, StatusBadge, fmtDate, statusLabel } from "@/components/ui";
 import { addEvidenceAction, deleteCustomControlAction, deleteEvidenceAction, updateControlAction } from "../../actions";
 
-export default async function ControlDetail({ params }: { params: Promise<{ id: string }> }) {
+export default async function ControlDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string }> }) {
   const { id } = await params;
+  const { error } = await searchParams;
   const { session, frameworks, controls, states, status } = await loadWorkspace();
   const c = controls.find((x) => x.id === id);
   if (!c) notFound();
@@ -38,6 +39,12 @@ export default async function ControlDetail({ params }: { params: Promise<{ id: 
               <>
                 <h3 className="mt-4 text-sm font-semibold">Suggested evidence</h3>
                 <ul className="mt-1 list-inside list-disc text-sm text-slate-600">{lib.evidence.map((e) => <li key={e}>{e}</li>)}</ul>
+                <h3 className="mt-4 text-sm font-semibold">Reference anchors</h3>
+                <p className="mt-1 text-xs text-slate-500">
+                  Anchored to Secure Controls Framework controls{" "}
+                  {lib.scf.map((a) => <code key={a} className="mr-1 rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px] text-slate-700">{a}</code>)}
+                  — used to independently corroborate this control&apos;s mappings (<Link href="/methodology" className="text-brand-600 hover:underline">methodology</Link>).
+                </p>
               </>
             )}
           </div>
@@ -56,10 +63,12 @@ export default async function ControlDetail({ params }: { params: Promise<{ id: 
                   </div>
                   <ul className="mt-1 ml-4 space-y-0.5 text-sm">
                     {c.map[f.id]!.map((code) => (
-                      <li key={code}>
+                      <li key={code} className="flex flex-wrap items-center gap-2">
+                        <RelBadge rel={relationship(c, f.id as FrameworkId, code)} compact />
                         <Link href={`/app/mapper?fw=${f.id}&code=${encodeURIComponent(code)}`} className="hover:underline">
                           <span className="font-mono text-xs font-semibold">{code}</span> <span className="text-slate-600">{findRequirement(f.id as FrameworkId, code)?.title}</span>
                         </Link>
+                        {!c.custom && <ProvenanceMark corroborated={isCorroborated(c.id, f.id as FrameworkId, code)} />}
                       </li>
                     ))}
                   </ul>
@@ -98,6 +107,9 @@ export default async function ControlDetail({ params }: { params: Promise<{ id: 
         <div className="space-y-6">
           <form action={updateControlAction} className="card space-y-4 p-5">
             <h2 className="font-semibold">Implementation</h2>
+            {error === "justification" && (
+              <div className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">Add a justification in the notes (at least 10 characters) to mark this control Not applicable.</div>
+            )}
             <input type="hidden" name="controlId" value={c.id} />
             <div>
               <label className="label" htmlFor="status">Status</label>
@@ -111,6 +123,7 @@ export default async function ControlDetail({ params }: { params: Promise<{ id: 
             </div>
             <div>
               <label className="label" htmlFor="notes">Implementation notes</label>
+              <p className="mb-1 text-xs text-slate-500">Required when marking a control <b>Not applicable</b> — the justification appears in the Statement of Applicability.</p>
               <textarea id="notes" name="notes" rows={5} defaultValue={st?.notes ?? ""} placeholder="How is this control implemented in your environment?" className="input" />
             </div>
             <button className="btn-primary w-full">Save</button>

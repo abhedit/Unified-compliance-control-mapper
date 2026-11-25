@@ -10,6 +10,7 @@ export default function MarketingNav() {
           <Link href="/map" className="hover:text-slate-900">Free mapper</Link>
           <Link href="/#features" className="hover:text-slate-900">Features</Link>
           <Link href="/#frameworks" className="hover:text-slate-900">Frameworks</Link>
+          <Link href="/methodology" className="hover:text-slate-900">Methodology</Link>
           <Link href="/#pricing" className="hover:text-slate-900">Pricing</Link>
           <Link href="/docs" className="hover:text-slate-900">API</Link>
         </nav>

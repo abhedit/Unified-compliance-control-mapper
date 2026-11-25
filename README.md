@@ -2,21 +2,27 @@
 
 **Implement a control once. Comply with every framework.**
 
-abhedit UCM is a multi-tenant SaaS application that maps one control across ISO 27001, SOC 2, NIST and other frameworks. It ships with a curated **Unified Control Library** of 91 controls, linked by 900+ mappings to 553 requirements across 9 frameworks:
+abhedit UCM is a multi-tenant SaaS application that maps one control across ISO 27001, SOC 2, NIST and other frameworks. It ships with a curated **Unified Control Library** (v2026.11) of **92 controls**, linked by **1,054 typed mapping links** to **654 requirements** across 9 frameworks.
 
-| Framework | Version | Requirements |
-|---|---|---|
-| ISO/IEC 27001 | 2022 (clauses 4–10 + all 93 Annex A controls) | 112 |
-| SOC 2 Trust Services Criteria | 2017 TSC (rev. 2022), CC + A + C + PI + P | 57 |
-| NIST Cybersecurity Framework | 2.0 | 99 |
-| NIST SP 800-53 | Rev. 5 (moderate-baseline controls in common use) | 100 |
-| HIPAA Security & Breach Notification Rules | 45 CFR 164 | 43 |
-| PCI DSS | v4.0.1 | 47 |
-| GDPR | 2016/679 | 22 |
-| CIS Critical Security Controls | v8 (key IG1/IG2 safeguards) | 57 |
-| India DPDP Act | 2023 (+ 2025 Rules) | 16 |
+The library is built with the procedure enterprise GRC programmes use. The full procedure is in **[MAPPING_METHODOLOGY.md](MAPPING_METHODOLOGY.md)**, and current metrics are in [docs/mapping-qa-report.md](docs/mapping-qa-report.md).
 
-`npm run validate-data` checks that every mapped code exists and that **every requirement in every framework is covered by at least one unified control**.
+- **Common control framework:** requirements map once to unified controls, and cross-framework equivalence is derived through the controls they share.
+- **NIST IR 8477 relationship types:** every link is typed `=` equal, `⊂` subset of, `⊃` superset of, or `∩` intersects with. Readiness scoring and crosswalk match strength (equivalent, strong, partial, supporting) follow from those types.
+- **Independent corroboration:** every control is anchored to Secure Controls Framework (SCF 2026.3) controls. 65% of links are corroborated by the SCF crosswalk. The rest are analyst-asserted, individually reviewed, and labelled as such in the product.
+- **CI integrity gates (R1–R7):** every mapped code exists, every requirement has non-supportive coverage, and relationships and provenance stay consistent.
+- **Versioned change control:** see [CHANGELOG-mappings.md](CHANGELOG-mappings.md).
+
+| Framework | Version | Requirements | Catalog completeness |
+|---|---|---:|---|
+| ISO/IEC 27001 | 2022 | 123 | All clauses 4–10 and all 93 Annex A controls |
+| SOC 2 Trust Services Criteria | 2017 TSC (rev. 2022) | 61 | All CC, A, C, PI and P criteria |
+| NIST Cybersecurity Framework | 2.0 | 106 | All subcategories |
+| NIST SP 800-53 | Rev. 5 | 100 | Base controls commonly selected for the moderate baseline; titles from the NIST OSCAL catalog |
+| HIPAA Security & Breach Notification Rules | 45 CFR 164 | 66 | All Security Rule standards and implementation specifications, plus breach notification |
+| PCI DSS | v4.0.1 | 63 | All second-level requirements |
+| GDPR | 2016/679 | 36 | Operative controller and processor obligations, data subject rights and transfer articles |
+| CIS Critical Security Controls | v8.1 | 79 | All 56 IG1 safeguards plus selected IG2/IG3 safeguards |
+| India DPDP Act | 2023 | 20 | Data Fiduciary obligations and Data Principal rights |
 
 ## Market research: how others do it
 
@@ -44,6 +50,16 @@ abhedit UCM is a multi-tenant SaaS application that maps one control across ISO 
 - **Multi-tenant auth.** Workspaces, scrypt password hashing, HTTP-only session cookies, and per-workspace framework scope.
 - **REST API.** Public mapping endpoints, plus workspace endpoints protected by hashed API keys (see `/docs`).
 
+## Mapping QA pipeline
+
+```bash
+python3 scripts/mapping-qa/extract_scf.py secure-controls-framework-scf-2026-3.xlsx scf-reference.json
+node --experimental-strip-types scripts/mapping-qa/reconcile.ts scf-reference.json --detail
+npm run validate-data
+```
+
+The SCF workbook is free from the SCF Council (CC BY-ND 4.0). It is used only as an audit reference and is not redistributed here.
+
 ## Tech stack
 
 - Next.js 15 (App Router, Server Components, Server Actions), React 19, TypeScript, Tailwind CSS v4
@@ -66,7 +82,7 @@ Requires Node.js 22.5+.
 
 ```bash
 npm install
-npm run validate-data   # check mapping integrity
+npm run validate-data   # mapping integrity gates R1–R7 (also run in CI)
 npm run dev             # http://localhost:3000
 ```
 
@@ -88,7 +104,7 @@ Environment variables (see `.env.example`):
 
 1. **Integrations for automated evidence**: AWS, GCP and Azure config, Okta and Google Workspace, GitHub, Jira, and MDM.
 2. **More frameworks**: ISO 27701, ISO 42001, SOC 1, NIST 800-171 / CMMC, RBI / SEBI CSCRF, CERT-In directions, DORA, NIS2, HITRUST.
-3. **Mapping relationship types** (NIST OLIR style: equal / subset / superset / intersects) and auditor review workflow.
+3. **Auditor review workflow:** auditors can accept or challenge individual links, and customers can override relationships for their own scope.
 4. **Consultant / MSP mode**: many client workspaces under one partner account.
 5. **Team invites, RBAC, SSO/SAML, and audit-ready PDF exports.**
 6. **Billing**: Stripe or Razorpay subscriptions for the published plans.

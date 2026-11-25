@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { loadWorkspace } from "@/lib/workspace";
-import { coverage, type ReqStatus } from "@/lib/mapper";
+import { REL_META, coverage, relationship, type ReqStatus } from "@/lib/mapper";
 import { FRAMEWORK_BY_ID, type FrameworkId } from "@/data/frameworks";
-import { PageHeader, Progress, ReqStatusBadge, Stat, StatusBadge } from "@/components/ui";
+import { PageHeader, Progress, RelBadge, ReqStatusBadge, Stat, StatusBadge } from "@/components/ui";
 
 export default async function FrameworkDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ show?: string }> }) {
   const { id } = await params;
@@ -40,18 +40,24 @@ export default async function FrameworkDetail({ params, searchParams }: { params
           <div key={g} className="card overflow-x-auto">
             <div className="border-b border-slate-100 px-4 py-2.5 text-sm font-semibold">{g}</div>
             <table className="table-base">
-              <thead><tr><th className="w-28">Ref</th><th>Requirement</th><th>Unified controls</th><th className="w-24">Status</th></tr></thead>
+              <thead><tr><th className="w-28">Ref</th><th>Requirement</th><th>Unified controls (STRM relationship)</th><th className="w-24">Status</th></tr></thead>
               <tbody>
                 {rows.filter((r) => r.requirement.group === g).map((r) => (
                   <tr key={r.requirement.code}>
                     <td className="font-mono text-xs font-semibold" style={{ color: f.color }}>
                       <Link href={`/app/mapper?fw=${f.id}&code=${encodeURIComponent(r.requirement.code)}`} className="hover:underline">{r.requirement.code}</Link>
                     </td>
-                    <td>{r.requirement.title}</td>
+                    <td>
+                      {r.requirement.title}
+                      <div className="mt-0.5 text-[11px] text-slate-400">
+                        {r.controls.some((c) => REL_META[relationship(c, f.id, r.requirement.code)].full) ? "Covered by a single control" : "Composite coverage — all required controls needed"}
+                      </div>
+                    </td>
                     <td>
                       <div className="flex flex-col gap-1">
                         {r.controls.map((c) => (
                           <Link key={c.id} href={`/app/controls/${c.id}`} className="flex items-center gap-2 text-xs hover:underline">
+                            <RelBadge rel={relationship(c, f.id, r.requirement.code)} compact />
                             <StatusBadge status={status[c.id] ?? "not_started"} />
                             <span className="font-mono font-semibold text-brand-700">{c.id}</span> <span className="text-slate-600">{c.name}</span>
                           </Link>

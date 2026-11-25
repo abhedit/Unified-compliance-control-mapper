@@ -16,7 +16,7 @@ export default async function PublicMapper({ searchParams }: { searchParams: Pro
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Free cross-framework control mapper</h1>
             <p className="mt-1 max-w-3xl text-sm text-slate-500">
-              Choose a requirement from any framework to see its equivalents in ISO 27001, SOC 2, NIST CSF 2.0, NIST 800-53, HIPAA, PCI DSS 4.0, GDPR, CIS v8 and the DPDP Act.
+              Choose a requirement from any framework to see its equivalents in ISO 27001, SOC 2, NIST CSF 2.0, NIST 800-53, HIPAA, PCI DSS 4.0.1, GDPR, CIS v8.1 and the DPDP Act — with NIST IR 8477 relationship types and match strength.
             </p>
           </div>
           <Link href="/signup" className="btn-primary shrink-0">Track readiness in a workspace →</Link>

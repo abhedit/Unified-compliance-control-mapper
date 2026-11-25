@@ -25,6 +25,19 @@ export type Domain =
   | "Privacy"
   | "Compliance";
 
+/**
+ * Set Theory Relationship Mapping (STRM) per NIST IR 8477, read as
+ * "<framework requirement> is <relationship> <unified control>":
+ *  - equal           requirement and control have the same scope        → full coverage
+ *  - subset_of       requirement is fully contained in the control      → full coverage
+ *  - superset_of     requirement is broader; control covers part of it  → partial (needs the other mapped controls)
+ *  - intersects_with control supports part of the requirement only      → supportive, not required for coverage
+ */
+export type Relationship = "equal" | "subset_of" | "superset_of" | "intersects_with";
+
+/** Version of the abhedit Unified Control Library mapping set. */
+export const LIBRARY_VERSION = "2026.11";
+
 export interface UnifiedControl {
   id: string;
   name: string;
@@ -33,7 +46,10 @@ export interface UnifiedControl {
   evidence: string[];
   automatable: boolean; // can evidence be collected via integrations
   frequency: "Continuous" | "Quarterly" | "Annual" | "Event-driven";
+  scf: string[]; // anchor controls in the Secure Controls Framework (SCF) metaframework
   map: Partial<Record<FrameworkId, string[]>>;
+  /** Explicit STRM relationships keyed "framework:code". Unlisted links are derived (see lib/mapper.ts). */
+  rel?: Record<string, Relationship>;
 }
 
 export const CONTROLS: UnifiedControl[] = [
@@ -47,13 +63,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Approved policy set with version history", "Annual review sign-off", "Policy acknowledgement records"],
     automatable: true,
     frequency: "Annual",
+    scf: ["GOV-01", "GOV-04", "GOV-04.1"],
     map: {
-      iso27001: ["5.2", "A.5.1", "7.5"],
+      iso27001: ["5.2", "A.5.1", "7.5.1", "7.5.2", "7.5.3"],
       soc2: ["CC5.3", "CC2.2"],
       csf2: ["GV.PO-01", "GV.PO-02"],
       nist80053: ["AC-1", "PM-1"],
-      hipaa: ["164.316(a)", "164.316(b)(1)"],
-      pci4: ["12.1"],
+      hipaa: ["164.316(a)", "164.316(b)(1)(i)", "164.316(b)(2)(iii)"],
+      pci4: ["12.1", "1.1", "2.1", "3.1", "4.1", "5.1", "6.1", "7.1", "8.1", "9.1", "10.1", "11.1"],
       gdpr: ["Art. 24"],
       dpdp: ["Sec. 8(4)"],
     },
@@ -67,13 +84,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Org chart with security reporting lines", "RACI / role descriptions", "Appointment letter of security officer"],
     automatable: false,
     frequency: "Annual",
+    scf: ["GOV-05", "HRS-04"],
     map: {
       iso27001: ["5.3", "A.5.2"],
-      soc2: ["CC1.3", "CC1.5"],
-      csf2: ["GV.RR-02", "GV.RR-03"],
+      soc2: ["CC1.3", "CC1.5", "CC2.2"],
+      csf2: ["GV.RR-02"],
       nist80053: ["PM-2"],
       hipaa: ["164.308(a)(2)"],
-      pci4: ["12.4"],
+      pci4: ["12.4", "1.1", "2.1", "3.1", "4.1", "5.1", "6.1", "7.1", "8.1", "9.1", "10.1", "11.1"],
       cisv8: ["17.1"],
     },
   },
@@ -86,11 +104,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Management review minutes", "Board/committee security briefings", "Approved security budget"],
     automatable: false,
     frequency: "Annual",
+    scf: ["GOV-02", "GOV-09", "PRM-05"],
     map: {
-      iso27001: ["5.1", "9.3", "A.5.4"],
+      iso27001: ["5.1", "A.5.4", "9.3.1", "9.3.2", "9.3.3", "7.1"],
       soc2: ["CC1.2", "CC1.1"],
-      csf2: ["GV.RR-01", "GV.OV-01", "GV.OV-02", "GV.OV-03", "GV.OC-01"],
+      csf2: ["GV.RR-01", "GV.OV-01", "GV.OV-02", "GV.OV-03", "GV.OC-01", "GV.RR-03"],
       nist80053: ["PM-1"],
+      hipaa: ["164.306(a)"],
       pci4: ["12.4"],
       gdpr: ["Art. 24"],
     },
@@ -104,8 +124,9 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Scope statement", "Context & interested parties register", "Security objectives with KPIs"],
     automatable: false,
     frequency: "Annual",
+    scf: ["GOV-06", "CPL-03", "GOV-03.3"],
     map: {
-      iso27001: ["4.1", "4.2", "4.3", "6.2"],
+      iso27001: ["4.1", "4.2", "4.3", "6.2", "4.4"],
       soc2: ["CC3.1", "CC2.3"],
       csf2: ["GV.OC-02", "GV.OC-04", "GV.OC-05", "GV.RM-01"],
       nist80053: ["PL-2"],
@@ -121,12 +142,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Signed code of conduct", "SoD matrix", "Compensating control documentation"],
     automatable: false,
     frequency: "Annual",
+    scf: ["HRS-14", "HRS-15"],
     map: {
       iso27001: ["A.5.3"],
       soc2: ["CC1.1", "CC5.1"],
       csf2: ["PR.AA-05"],
       nist80053: ["AC-5"],
-      pci4: ["7.2"],
+      pci4: ["6.5"],
     },
   },
   {
@@ -138,13 +160,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Runbooks / SOP repository", "Document control records"],
     automatable: true,
     frequency: "Annual",
+    scf: ["OPS-04"],
     map: {
-      iso27001: ["A.5.37", "7.5", "8.1"],
+      iso27001: ["A.5.37", "8.1", "7.5.1", "7.5.2", "7.5.3"],
       soc2: ["CC5.3"],
       csf2: ["GV.PO-01"],
       nist80053: ["PL-2"],
-      hipaa: ["164.316(b)(1)", "164.316(b)(2)(i)"],
-      pci4: ["12.1"],
+      hipaa: ["164.316(b)(2)(i)", "164.316(b)(1)(i)", "164.316(b)(1)(ii)", "164.316(b)(2)(ii)"],
+      pci4: ["12.1", "1.1", "2.1", "3.1", "4.1", "5.1", "6.1", "7.1", "8.1", "9.1", "10.1", "11.1"],
     },
   },
   {
@@ -156,12 +179,17 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Communication plan", "Authority/regulator contact list", "Memberships (ISACs, CERT-In, etc.)"],
     automatable: false,
     frequency: "Annual",
+    scf: ["GOV-15", "GOV-16"],
     map: {
       iso27001: ["7.4", "A.5.5", "A.5.6"],
       soc2: ["CC2.2", "CC2.3"],
       csf2: ["ID.RA-02", "RS.CO-03"],
       nist80053: ["PM-15"],
+      gdpr: ["Art. 31"],
       cisv8: ["17.2"],
+    },
+    rel: {
+      "csf2:RS.CO-03": "intersects_with",
     },
   },
 
@@ -175,15 +203,20 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Risk methodology", "Risk register", "Annual risk assessment report"],
     automatable: true,
     frequency: "Annual",
+    scf: ["RSK-01", "RSK-05", "RSK-13", "RSK-15"],
     map: {
-      iso27001: ["6.1.2"],
+      iso27001: ["6.1.2", "6.1.1", "8.2"],
       soc2: ["CC3.1", "CC3.2", "CC3.3"],
-      csf2: ["GV.RM-02", "GV.RM-03", "GV.RM-06", "ID.RA-03", "ID.RA-04", "ID.RA-05"],
+      csf2: ["GV.RM-02", "GV.RM-03", "GV.RM-06", "ID.RA-03", "ID.RA-04", "ID.RA-05", "GV.RM-05", "GV.RM-07"],
       nist80053: ["RA-3", "PM-9"],
-      hipaa: ["164.308(a)(1)(ii)(A)"],
+      hipaa: ["164.308(a)(1)(ii)(A)", "164.308(a)(1)(i)"],
       pci4: ["12.3"],
       gdpr: ["Art. 32"],
       dpdp: ["Sec. 8(5)"],
+    },
+    rel: {
+      "gdpr:Art. 32": "intersects_with",
+      "dpdp:Sec. 8(5)": "intersects_with",
     },
   },
   {
@@ -195,12 +228,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Risk treatment plan", "Statement of Applicability", "Risk acceptance sign-offs", "POA&M"],
     automatable: true,
     frequency: "Annual",
+    scf: ["RSK-16", "RSK-17", "CPL-25"],
     map: {
-      iso27001: ["6.1.3"],
+      iso27001: ["6.1.3", "8.3"],
       soc2: ["CC5.1", "CC9.1"],
       csf2: ["GV.RM-04", "ID.RA-06"],
       nist80053: ["RA-7", "CA-5"],
-      hipaa: ["164.308(a)(1)(ii)(B)"],
+      hipaa: ["164.308(a)(1)(ii)(B)", "164.308(a)(1)(i)"],
       pci4: ["12.3"],
     },
   },
@@ -213,8 +247,9 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Exception register", "Change risk assessments"],
     automatable: true,
     frequency: "Event-driven",
+    scf: ["GOV-04.2"],
     map: {
-      iso27001: ["6.1.2"],
+      iso27001: ["6.1.2", "6.3"],
       soc2: ["CC3.4"],
       csf2: ["ID.RA-07"],
       nist80053: ["CM-4"],
@@ -229,11 +264,16 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Threat intel feed subscriptions", "Threat briefings / advisories log"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["THR-02", "THR-04"],
     map: {
       iso27001: ["A.5.7"],
       soc2: ["CC3.2", "CC7.1"],
       csf2: ["ID.RA-02", "ID.RA-03", "DE.AE-07"],
       nist80053: ["PM-16", "SI-5"],
+    },
+    rel: {
+      "iso27001:A.5.7": "equal",
+      "soc2:CC7.1": "intersects_with",
     },
   },
   {
@@ -245,8 +285,9 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Internal audit plan and reports", "Continuous control monitoring dashboard", "Deficiency tracker"],
     automatable: true,
     frequency: "Annual",
+    scf: ["CPL-05", "CPL-07.1", "CPL-07.2", "CPL-08"],
     map: {
-      iso27001: ["9.1", "9.2", "A.5.35", "A.5.36"],
+      iso27001: ["9.1", "A.5.35", "A.5.36", "9.2.1", "9.2.2"],
       soc2: ["CC4.1", "CC4.2"],
       csf2: ["GV.OV-03", "ID.IM-01"],
       nist80053: ["CA-2", "CA-7"],
@@ -265,6 +306,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Corrective action register (CAPA)", "Lessons-learned records"],
     automatable: true,
     frequency: "Event-driven",
+    scf: ["CPL-06", "IAO-12"],
     map: {
       iso27001: ["10.1", "10.2"],
       soc2: ["CC4.2"],
@@ -283,12 +325,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["MDM / CMDB asset export", "Asset owner assignment", "Unauthorized asset tickets"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["AST-04", "AST-11"],
     map: {
       iso27001: ["A.5.9"],
       soc2: ["CC6.1"],
       csf2: ["ID.AM-01", "ID.AM-08"],
       nist80053: ["CM-8"],
-      pci4: ["12.5"],
+      hipaa: ["164.310(d)(2)(iii)"],
+      pci4: ["12.5", "11.2"],
       cisv8: ["1.1", "1.2"],
     },
   },
@@ -301,8 +345,9 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Cloud resource inventory", "SaaS discovery report", "Software allow-list"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["AST-04", "CLD-02", "AST-13"],
     map: {
-      iso27001: ["A.5.9", "A.5.23"],
+      iso27001: ["A.5.9", "A.5.23", "A.5.32"],
       soc2: ["CC6.1"],
       csf2: ["ID.AM-02", "ID.AM-08"],
       nist80053: ["CM-8"],
@@ -319,6 +364,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Data inventory / data map", "Data flow diagrams", "Records of processing activities (RoPA)"],
     automatable: true,
     frequency: "Annual",
+    scf: ["PRI-07", "DCH-05", "AST-17", "PRI-05"],
     map: {
       iso27001: ["A.5.9", "A.5.34"],
       soc2: ["C1.1", "P3.1"],
@@ -339,6 +385,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Data classification policy", "Labelling standard", "Classified asset register"],
     automatable: false,
     frequency: "Annual",
+    scf: ["DCH-01", "DCH-04"],
     map: {
       iso27001: ["A.5.12", "A.5.13"],
       soc2: ["C1.1"],
@@ -346,6 +393,9 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["RA-2"],
       hipaa: ["164.308(a)(7)(ii)(E)"],
       cisv8: ["3.1"],
+    },
+    rel: {
+      "iso27001:A.5.12": "equal",
     },
   },
   {
@@ -357,13 +407,17 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Acceptable use policy acknowledgements", "Asset return checklist"],
     automatable: true,
     frequency: "Event-driven",
+    scf: ["HRS-06.1", "HRS-06.3", "AST-23"],
     map: {
       iso27001: ["A.5.10", "A.5.11"],
-      soc2: ["CC2.2", "CC6.5"],
+      soc2: ["CC2.2"],
       csf2: ["GV.PO-01"],
       nist80053: ["PL-4"],
       hipaa: ["164.310(b)"],
       pci4: ["12.2"],
+    },
+    rel: {
+      "soc2:CC2.2": "intersects_with",
     },
   },
   {
@@ -375,9 +429,10 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Media handling procedure", "Certificates of destruction", "Sanitization logs"],
     automatable: false,
     frequency: "Event-driven",
+    scf: ["AST-22", "DCH-13", "DCH-16", "DCH-17", "DCH-18"],
     map: {
-      iso27001: ["A.7.10", "A.7.14"],
-      soc2: ["CC6.5", "C1.2"],
+      iso27001: ["A.7.10", "A.7.14", "A.8.10"],
+      soc2: ["CC6.5", "C1.2", "P4.3"],
       csf2: ["PR.PS-03", "ID.AM-08"],
       nist80053: ["MP-2", "MP-6", "MP-7"],
       hipaa: ["164.310(d)(1)", "164.310(d)(2)(i)", "164.310(d)(2)(ii)"],
@@ -396,6 +451,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Background check completion records", "Screening policy"],
     automatable: true,
     frequency: "Event-driven",
+    scf: ["HRS-05"],
     map: {
       iso27001: ["A.6.1"],
       soc2: ["CC1.4"],
@@ -403,6 +459,12 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PS-3"],
       hipaa: ["164.308(a)(3)(ii)(B)"],
       pci4: ["12.7"],
+    },
+    rel: {
+      "iso27001:A.6.1": "equal",
+      "nist80053:PS-3": "equal",
+      "pci4:12.7": "equal",
+      "hipaa:164.308(a)(3)(ii)(B)": "intersects_with",
     },
   },
   {
@@ -414,12 +476,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Signed employment agreements", "Signed NDAs"],
     automatable: true,
     frequency: "Event-driven",
+    scf: ["HRS-06", "HRS-07.1"],
     map: {
       iso27001: ["A.6.2", "A.6.6"],
       soc2: ["CC1.1", "CC1.4"],
       csf2: ["GV.RR-04"],
       nist80053: ["PS-6", "PS-7"],
       pci4: ["12.2"],
+      gdpr: ["Art. 29"],
     },
   },
   {
@@ -431,15 +495,21 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Training completion report", "Phishing simulation results", "Training content"],
     automatable: true,
     frequency: "Annual",
+    scf: ["SAT-02", "SAT-04", "SAT-06.1"],
     map: {
       iso27001: ["7.2", "7.3", "A.6.3"],
       soc2: ["CC1.4", "CC2.2"],
       csf2: ["PR.AT-01"],
       nist80053: ["AT-2"],
-      hipaa: ["164.308(a)(5)(i)"],
+      hipaa: ["164.308(a)(5)(i)", "164.308(a)(5)(ii)(A)"],
       pci4: ["12.6", "5.4"],
-      cisv8: ["14.1", "14.2"],
+      cisv8: ["14.1", "14.2", "14.3", "14.4", "14.5", "14.6", "14.7", "14.8"],
       dpdp: ["Sec. 8(4)"],
+    },
+    rel: {
+      "nist80053:AT-2": "equal",
+      "pci4:12.6": "equal",
+      "pci4:5.4": "intersects_with",
     },
   },
   {
@@ -451,12 +521,17 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Secure coding training records", "Incident responder training records"],
     automatable: true,
     frequency: "Annual",
+    scf: ["SAT-05", "IRO-10"],
     map: {
       iso27001: ["7.2", "A.6.3"],
       soc2: ["CC1.4"],
       csf2: ["PR.AT-02"],
       nist80053: ["AT-3", "IR-2"],
       pci4: ["6.2", "12.6"],
+    },
+    rel: {
+      "nist80053:AT-3": "equal",
+      "csf2:PR.AT-02": "equal",
     },
   },
   {
@@ -468,12 +543,18 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Sanctions policy", "HR handbook section"],
     automatable: false,
     frequency: "Annual",
+    scf: ["HRS-10"],
     map: {
       iso27001: ["A.6.4"],
       soc2: ["CC1.5"],
       csf2: ["GV.RR-04"],
       nist80053: ["PS-8"],
       hipaa: ["164.308(a)(1)(ii)(C)"],
+    },
+    rel: {
+      "iso27001:A.6.4": "equal",
+      "nist80053:PS-8": "equal",
+      "hipaa:164.308(a)(1)(ii)(C)": "equal",
     },
   },
   {
@@ -485,6 +566,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Offboarding tickets with timestamps", "Access revocation evidence from IdP"],
     automatable: true,
     frequency: "Event-driven",
+    scf: ["HRS-11", "HRS-12", "IAC-04.1", "IAC-04.2"],
     map: {
       iso27001: ["A.6.5", "A.5.11", "A.5.18"],
       soc2: ["CC6.2", "CC6.3"],
@@ -504,12 +586,16 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Remote work policy", "VPN/ZTNA configuration", "Device posture compliance report"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["NET-26", "NET-27"],
     map: {
       iso27001: ["A.6.7", "A.7.9"],
       soc2: ["CC6.6", "CC6.7"],
       csf2: ["PR.IR-01"],
       nist80053: ["AC-17"],
       pci4: ["1.5"],
+    },
+    rel: {
+      "soc2:CC6.7": "intersects_with",
     },
   },
 
@@ -523,15 +609,16 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Access control policy", "RBAC role definitions", "Access matrix"],
     automatable: true,
     frequency: "Annual",
+    scf: ["IAC-06", "IAC-25", "IAC-30"],
     map: {
       iso27001: ["A.5.15", "A.8.3"],
       soc2: ["CC6.1", "CC6.3"],
       csf2: ["PR.AA-05"],
       nist80053: ["AC-1", "AC-3", "AC-6"],
-      hipaa: ["164.312(a)(1)", "164.308(a)(4)(ii)(B)"],
-      pci4: ["7.2", "7.3"],
+      hipaa: ["164.312(a)(1)", "164.308(a)(4)(ii)(B)", "164.308(a)(3)(i)", "164.308(a)(3)(ii)(A)", "164.308(a)(4)(i)", "164.308(a)(4)(ii)(A)"],
+      pci4: ["7.2", "7.3", "7.1"],
       cisv8: ["3.3", "6.8"],
-      gdpr: ["Art. 32"],
+      gdpr: ["Art. 32", "Art. 29"],
     },
   },
   {
@@ -543,6 +630,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Access request & approval tickets", "IdP user export", "Account inventory"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["IAC-04", "IAC-13"],
     map: {
       iso27001: ["A.5.16", "A.5.18"],
       soc2: ["CC6.2"],
@@ -562,12 +650,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Quarterly access review sign-offs", "Removed access tickets", "Dormant account report"],
     automatable: true,
     frequency: "Quarterly",
+    scf: ["IAC-12", "IAC-08.4"],
     map: {
       iso27001: ["A.5.18", "A.8.2"],
       soc2: ["CC6.2", "CC6.3"],
       csf2: ["PR.AA-05"],
       nist80053: ["AC-2", "AC-6"],
-      hipaa: ["164.308(a)(4)(ii)(C)"],
+      hipaa: ["164.308(a)(4)(ii)(C)", "164.308(a)(3)(ii)(B)"],
       pci4: ["7.2", "8.2"],
       cisv8: ["5.3"],
     },
@@ -581,14 +670,18 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["IdP MFA enforcement policy", "MFA enrollment report", "Cloud console MFA status"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["IAC-37", "IAC-37.5", "IAC-37.6", "IAC-37.7"],
     map: {
       iso27001: ["A.8.5"],
-      soc2: ["CC6.1"],
+      soc2: ["CC6.1", "CC6.6"],
       csf2: ["PR.AA-03"],
       nist80053: ["IA-2"],
       hipaa: ["164.312(d)"],
-      pci4: ["8.4"],
-      cisv8: ["6.3", "6.5"],
+      pci4: ["8.4", "8.5"],
+      cisv8: ["6.3", "6.5", "6.4"],
+    },
+    rel: {
+      "pci4:8.4": "equal",
     },
   },
   {
@@ -600,6 +693,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Password policy configuration", "Secrets vault configuration", "Lockout settings"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["IAC-14", "IAC-15", "CFG-04.1"],
     map: {
       iso27001: ["A.5.17", "A.8.5"],
       soc2: ["CC6.1"],
@@ -619,6 +713,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Admin account inventory", "PAM / JIT access logs", "Break-glass procedure"],
     automatable: true,
     frequency: "Quarterly",
+    scf: ["IAC-09.1", "IAC-10", "IAC-11"],
     map: {
       iso27001: ["A.8.2", "A.8.18"],
       soc2: ["CC6.1", "CC6.3"],
@@ -638,6 +733,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["MDM screen-lock policy", "Application session timeout configuration"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["CFG-04.3", "CFG-04.5"],
     map: {
       iso27001: ["A.8.5", "A.7.7"],
       soc2: ["CC6.1"],
@@ -657,12 +753,16 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Repository permission export", "Branch protection settings"],
     automatable: true,
     frequency: "Quarterly",
+    scf: ["TDA-16.1"],
     map: {
       iso27001: ["A.8.4"],
       soc2: ["CC6.1", "CC8.1"],
       csf2: ["PR.AA-05", "PR.PS-06"],
       nist80053: ["AC-3", "SA-15"],
-      pci4: ["6.2"],
+      pci4: [],
+    },
+    rel: {
+      "iso27001:A.8.4": "equal",
     },
   },
 
@@ -676,6 +776,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Storage/DB encryption configuration", "Disk encryption report (MDM)"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["CRY-07"],
     map: {
       iso27001: ["A.8.24"],
       soc2: ["CC6.1", "CC6.7"],
@@ -697,12 +798,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["TLS configuration scan", "Load balancer / CDN TLS policy"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["CRY-05"],
     map: {
       iso27001: ["A.8.24", "A.5.14"],
       soc2: ["CC6.7"],
       csf2: ["PR.DS-02"],
       nist80053: ["SC-8", "SC-13"],
-      hipaa: ["164.312(e)(1)"],
+      hipaa: ["164.312(e)(1)", "164.312(e)(2)(i)", "164.312(e)(2)(ii)"],
       pci4: ["4.2"],
       gdpr: ["Art. 32"],
       cisv8: ["3.10"],
@@ -718,12 +820,16 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["KMS key policies", "Key rotation configuration", "Key management procedure"],
     automatable: true,
     frequency: "Annual",
+    scf: ["CRY-02", "CRY-10"],
     map: {
       iso27001: ["A.8.24"],
       soc2: ["CC6.1"],
       csf2: ["PR.DS-01"],
-      nist80053: ["SC-12"],
+      nist80053: ["SC-12", "SC-13"],
       pci4: ["3.6", "3.7"],
+    },
+    rel: {
+      "nist80053:SC-12": "equal",
     },
   },
   {
@@ -735,6 +841,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Masking/tokenization configuration", "Screenshots of masked fields"],
     automatable: false,
     frequency: "Annual",
+    scf: ["DCH-12", "DCH-36"],
     map: {
       iso27001: ["A.8.11"],
       soc2: ["C1.1"],
@@ -742,6 +849,10 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["SC-28"],
       pci4: ["3.4"],
       gdpr: ["Art. 25", "Art. 32"],
+    },
+    rel: {
+      "iso27001:A.8.11": "equal",
+      "soc2:C1.1": "intersects_with",
     },
   },
 
@@ -755,13 +866,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Badge access lists and reviews", "Visitor logs", "Data center provider SOC 2 report"],
     automatable: false,
     frequency: "Quarterly",
+    scf: ["PES-06", "PES-08", "PES-09", "PES-14"],
     map: {
       iso27001: ["A.7.1", "A.7.2", "A.7.3", "A.7.6"],
       soc2: ["CC6.4"],
       csf2: ["PR.AA-06"],
       nist80053: ["PE-2", "PE-3"],
-      hipaa: ["164.310(a)(1)", "164.310(a)(2)(iii)"],
-      pci4: ["9.2", "9.3"],
+      hipaa: ["164.310(a)(1)", "164.310(a)(2)(iii)", "164.310(a)(2)(ii)"],
+      pci4: ["9.2", "9.3", "9.1"],
     },
   },
   {
@@ -772,12 +884,17 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["CCTV coverage map", "Alarm monitoring contract"],
     automatable: false,
     frequency: "Continuous",
+    scf: ["PES-13", "PES-13.1"],
     map: {
       iso27001: ["A.7.4"],
       soc2: ["CC6.4"],
       csf2: ["DE.CM-02"],
       nist80053: ["PE-6"],
       pci4: ["9.2"],
+    },
+    rel: {
+      "iso27001:A.7.4": "equal",
+      "nist80053:PE-6": "equal",
     },
   },
   {
@@ -789,12 +906,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Data center certifications", "UPS/generator maintenance records", "Fire suppression inspection"],
     automatable: false,
     frequency: "Annual",
+    scf: ["PES-20", "PES-26", "PES-29", "MNT-02", "MNT-03"],
     map: {
       iso27001: ["A.7.5", "A.7.8", "A.7.11", "A.7.12", "A.7.13"],
       soc2: ["A1.2"],
       csf2: ["PR.IR-02"],
       nist80053: ["PE-9", "PE-13", "PE-14", "MA-2"],
-      hipaa: ["164.310(a)(1)"],
+      hipaa: ["164.310(a)(1)", "164.310(a)(2)(iv)"],
     },
   },
   {
@@ -806,14 +924,18 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["MDM compliance report", "Clear desk policy", "Remote wipe capability"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["END-02", "AST-20", "AST-21", "IAC-35"],
     map: {
       iso27001: ["A.8.1", "A.7.7", "A.7.9"],
-      soc2: ["CC6.1", "CC6.8"],
-      csf2: ["PR.PS-01", "PR.AA-05"],
+      soc2: ["CC6.1", "CC6.7"],
+      csf2: ["PR.PS-01"],
       nist80053: ["AC-19", "AC-11"],
       hipaa: ["164.310(b)", "164.310(c)"],
       pci4: ["1.5", "9.5"],
-      cisv8: ["3.6", "4.3"],
+      cisv8: ["3.6", "4.3", "4.5"],
+    },
+    rel: {
+      "csf2:PR.PS-01": "intersects_with",
     },
   },
 
@@ -827,13 +949,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Hardening standards", "IaC repository", "Configuration drift / CSPM report"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["CFG-02", "CFG-04", "CFG-07"],
     map: {
       iso27001: ["A.8.9"],
       soc2: ["CC7.1", "CC5.2"],
       csf2: ["PR.PS-01"],
       nist80053: ["CM-2", "CM-6", "CM-7"],
-      pci4: ["2.2"],
-      cisv8: ["4.1"],
+      pci4: ["2.2", "2.1", "2.3"],
+      cisv8: ["4.1", "4.2", "4.6", "4.7"],
     },
   },
   {
@@ -845,14 +968,20 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["EDR deployment coverage report", "Signature/agent update status", "EDR alert samples"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["END-04", "END-04.1"],
     map: {
       iso27001: ["A.8.7"],
       soc2: ["CC6.8"],
       csf2: ["DE.CM-09", "PR.PS-05"],
       nist80053: ["SI-3"],
       hipaa: ["164.308(a)(5)(ii)(B)"],
-      pci4: ["5.2", "5.3"],
-      cisv8: ["10.1"],
+      pci4: ["5.2", "5.3", "5.1"],
+      cisv8: ["10.1", "10.2", "10.3"],
+    },
+    rel: {
+      "iso27001:A.8.7": "equal",
+      "nist80053:SI-3": "equal",
+      "cisv8:10.1": "equal",
     },
   },
   {
@@ -864,6 +993,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Application allow-listing config", "Local admin removal report"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["CFG-12", "CFG-14"],
     map: {
       iso27001: ["A.8.19"],
       soc2: ["CC6.8", "CC8.1"],
@@ -881,11 +1011,16 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Capacity dashboards", "Auto-scaling policies", "Capacity planning review"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["CAP-02", "CAP-03"],
     map: {
       iso27001: ["A.8.6"],
       soc2: ["A1.1"],
       csf2: ["PR.IR-04"],
       nist80053: ["SC-5"],
+    },
+    rel: {
+      "iso27001:A.8.6": "equal",
+      "soc2:A1.1": "equal",
     },
   },
   {
@@ -897,13 +1032,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Retention schedule", "Automated deletion jobs", "Deletion request log"],
     automatable: true,
     frequency: "Quarterly",
+    scf: ["DCH-27", "PRI-30"],
     map: {
       iso27001: ["A.8.10", "A.5.33"],
       soc2: ["C1.2", "P4.2", "P4.3"],
       csf2: ["ID.AM-08"],
       nist80053: ["SI-12", "MP-6"],
       hipaa: ["164.316(b)(2)(i)"],
-      pci4: ["3.2"],
+      pci4: ["3.2", "3.3"],
       gdpr: ["Art. 5", "Art. 17"],
       cisv8: ["3.4", "3.5"],
       dpdp: ["Sec. 8(7)"],
@@ -918,12 +1054,18 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["DLP policy configuration", "External sharing settings", "DLP incident log"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["DCH-40", "NET-03.5"],
     map: {
       iso27001: ["A.8.12", "A.5.14"],
       soc2: ["CC6.7"],
       csf2: ["PR.DS-01", "PR.DS-02"],
       nist80053: ["AC-4"],
       pci4: ["1.3"],
+    },
+    rel: {
+      "iso27001:A.8.12": "equal",
+      "csf2:PR.DS-01": "intersects_with",
+      "csf2:PR.DS-02": "intersects_with",
     },
   },
   {
@@ -935,11 +1077,15 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Input validation specifications", "Reconciliation reports", "Job failure alerts"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["TDA-12", "DCH-33"],
     map: {
       iso27001: ["A.8.26"],
       soc2: ["PI1.1", "PI1.2", "PI1.3", "PI1.4", "PI1.5"],
       csf2: ["PR.DS-10"],
-      hipaa: ["164.312(c)(1)"],
+      hipaa: ["164.312(c)(1)", "164.312(c)(2)"],
+    },
+    rel: {
+      "csf2:PR.DS-10": "intersects_with",
     },
   },
 
@@ -953,12 +1099,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Security group / firewall rule export", "Rule review records", "Network diagram"],
     automatable: true,
     frequency: "Quarterly",
+    scf: ["NET-02", "NET-03", "NET-04.1"],
     map: {
       iso27001: ["A.8.20", "A.8.21"],
       soc2: ["CC6.6"],
       csf2: ["PR.IR-01"],
       nist80053: ["SC-7"],
-      pci4: ["1.2", "1.3", "1.4"],
+      pci4: ["1.2", "1.3", "1.4", "1.1"],
       cisv8: ["4.4", "12.2"],
     },
   },
@@ -971,6 +1118,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Segmentation architecture", "VPC/subnet design", "Segmentation test results"],
     automatable: true,
     frequency: "Annual",
+    scf: ["NET-06"],
     map: {
       iso27001: ["A.8.22"],
       soc2: ["CC6.6", "CC6.1"],
@@ -988,6 +1136,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["DNS filtering configuration", "Blocked category policy"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["NET-17"],
     map: {
       iso27001: ["A.8.23"],
       soc2: ["CC6.8"],
@@ -995,6 +1144,11 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["SC-7"],
       pci4: ["5.4"],
       cisv8: ["9.2"],
+    },
+    rel: {
+      "iso27001:A.8.23": "equal",
+      "cisv8:9.2": "equal",
+      "pci4:5.4": "intersects_with",
     },
   },
   {
@@ -1006,13 +1160,42 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["WAF ruleset configuration", "DDoS protection configuration", "IDS/IPS alerts"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["NET-21", "NET-34", "MON-23"],
     map: {
       iso27001: ["A.8.20", "A.8.16"],
       soc2: ["CC6.6", "CC7.2"],
       csf2: ["PR.IR-01", "DE.CM-01"],
       nist80053: ["SC-5", "SC-7", "SI-4"],
-      pci4: ["6.4", "11.5"],
+      pci4: ["6.4", "11.5", "11.2"],
       cisv8: ["13.3"],
+    },
+    rel: {
+      "csf2:PR.IR-01": "intersects_with",
+    },
+  },
+
+  {
+    id: "NET-05",
+    name: "Email security and anti-phishing",
+    domain: "Network Security",
+    description:
+      "Inbound email is filtered for phishing, spam and malicious attachments; SPF, DKIM and DMARC (enforcing policy) protect the organization's domains from spoofing.",
+    evidence: ["Email security gateway / filtering configuration", "SPF, DKIM and DMARC DNS records", "Phishing detection reports"],
+    automatable: true,
+    frequency: "Continuous",
+    scf: ["NET-39", "NET-39.1", "NET-40.2"],
+    map: {
+      iso27001: ["A.5.14", "A.8.7"],
+      soc2: ["CC6.8"],
+      csf2: ["DE.CM-09"],
+      nist80053: ["SI-3"],
+      pci4: ["5.4"],
+      cisv8: ["9.5"],
+    },
+    rel: {
+      "pci4:5.4": "equal",
+      "cisv8:9.5": "subset_of",
+      "csf2:DE.CM-09": "intersects_with",
     },
   },
 
@@ -1026,14 +1209,15 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Logging standard", "SIEM source coverage", "Sample log records"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["MON-03", "MON-04", "MON-05", "MON-09"],
     map: {
       iso27001: ["A.8.15"],
       soc2: ["CC7.2"],
       csf2: ["PR.PS-04"],
       nist80053: ["AU-2", "AU-3", "AU-12"],
       hipaa: ["164.312(b)"],
-      pci4: ["10.2"],
-      cisv8: ["8.1", "8.2"],
+      pci4: ["10.2", "10.1"],
+      cisv8: ["8.1", "8.2", "8.3"],
     },
   },
   {
@@ -1045,6 +1229,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Immutable storage / object lock settings", "Log retention configuration", "Log access permissions"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["MON-12", "MON-13"],
     map: {
       iso27001: ["A.8.15"],
       soc2: ["CC7.2"],
@@ -1063,6 +1248,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["SIEM detection rules", "Alert triage records", "On-call schedule"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["MON-01", "MON-02", "MON-08"],
     map: {
       iso27001: ["A.8.16"],
       soc2: ["CC7.2", "CC7.3"],
@@ -1081,13 +1267,21 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["NTP configuration", "Cloud time sync settings"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["SEA-30", "MON-11"],
     map: {
       iso27001: ["A.8.17"],
-      soc2: ["CC7.2"],
+      soc2: [],
       csf2: ["DE.AE-03"],
       nist80053: ["AU-8"],
       pci4: ["10.6"],
       cisv8: ["8.4"],
+    },
+    rel: {
+      "iso27001:A.8.17": "equal",
+      "nist80053:AU-8": "equal",
+      "pci4:10.6": "equal",
+      "cisv8:8.4": "equal",
+      "csf2:DE.AE-03": "intersects_with",
     },
   },
 
@@ -1101,14 +1295,18 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Scanner reports", "Remediation SLA tracking", "Dependency scanning results"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["VPM-02", "VPM-06", "VPM-12"],
     map: {
       iso27001: ["A.8.8"],
       soc2: ["CC7.1"],
       csf2: ["ID.RA-01", "PR.PS-02"],
       nist80053: ["RA-5", "SI-2"],
-      pci4: ["6.3", "11.3"],
-      cisv8: ["7.1", "7.5"],
+      pci4: ["6.3", "11.3", "11.1"],
+      cisv8: ["7.1", "7.5", "7.2"],
       gdpr: ["Art. 32"],
+    },
+    rel: {
+      "gdpr:Art. 32": "intersects_with",
     },
   },
   {
@@ -1120,13 +1318,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Patch compliance report", "EOL software register"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["VPM-08", "AST-39", "CFG-15"],
     map: {
       iso27001: ["A.8.8", "A.8.19"],
       soc2: ["CC7.1", "CC8.1"],
       csf2: ["PR.PS-02", "PR.PS-03"],
       nist80053: ["SI-2"],
       pci4: ["6.3"],
-      cisv8: ["7.3"],
+      cisv8: ["7.3", "2.2", "7.4", "9.1", "12.1"],
     },
   },
   {
@@ -1138,6 +1337,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Penetration test report", "Remediation and retest evidence"],
     automatable: false,
     frequency: "Annual",
+    scf: ["VPM-18", "VPM-19"],
     map: {
       iso27001: ["A.8.8", "A.8.29", "A.5.35"],
       soc2: ["CC4.1", "CC7.1"],
@@ -1145,6 +1345,10 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["CA-8"],
       pci4: ["11.4"],
       cisv8: ["18.1", "18.2"],
+    },
+    rel: {
+      "nist80053:CA-8": "equal",
+      "pci4:11.4": "equal",
     },
   },
   {
@@ -1156,12 +1360,17 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["security.txt / VDP page", "Researcher report tickets"],
     automatable: false,
     frequency: "Event-driven",
+    scf: ["THR-12"],
     map: {
       iso27001: ["A.8.8"],
       soc2: ["CC2.3", "CC7.1"],
       csf2: ["ID.RA-08"],
       nist80053: ["RA-5"],
       cisv8: ["16.2"],
+    },
+    rel: {
+      "csf2:ID.RA-08": "equal",
+      "soc2:CC2.3": "intersects_with",
     },
   },
 
@@ -1175,12 +1384,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["SDLC policy", "Threat models", "Security requirements in tickets"],
     automatable: false,
     frequency: "Annual",
+    scf: ["PRM-07", "TDA-05", "SEA-05"],
     map: {
       iso27001: ["A.8.25", "A.8.26", "A.8.27", "A.5.8"],
       soc2: ["CC8.1", "CC5.2"],
       csf2: ["PR.PS-06"],
       nist80053: ["SA-3", "SA-8", "PL-8", "SA-15"],
-      pci4: ["6.2"],
+      pci4: ["6.2", "6.1"],
       gdpr: ["Art. 25"],
       cisv8: ["16.1"],
     },
@@ -1194,6 +1404,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Pull request review history", "SAST/SCA pipeline results", "Secure coding standard"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["TDA-17", "TDA-17.1", "TDA-17.5"],
     map: {
       iso27001: ["A.8.28", "A.8.29"],
       soc2: ["CC8.1"],
@@ -1212,6 +1423,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Change tickets with approvals", "CI/CD deployment logs", "Emergency change reviews"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["CHG-02", "CHG-06", "CHG-07"],
     map: {
       iso27001: ["A.8.32"],
       soc2: ["CC8.1", "CC3.4"],
@@ -1230,6 +1442,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Environment architecture", "Test data masking procedure", "Access lists per environment"],
     automatable: true,
     frequency: "Annual",
+    scf: ["TDA-15.1", "TDA-18"],
     map: {
       iso27001: ["A.8.31", "A.8.33", "A.8.34"],
       soc2: ["CC8.1"],
@@ -1247,10 +1460,11 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Development contracts with security clauses", "Code review of vendor deliverables"],
     automatable: false,
     frequency: "Event-driven",
+    scf: ["TDA-04", "TDA-19", "TDA-20"],
     map: {
       iso27001: ["A.8.30"],
       soc2: ["CC9.2", "CC8.1"],
-      csf2: ["GV.SC-05"],
+      csf2: ["GV.SC-05", "ID.RA-09"],
       nist80053: ["SA-4", "SA-11"],
       pci4: ["6.2"],
     },
@@ -1266,10 +1480,11 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Vendor inventory", "Vendor management policy", "Vendor tiering"],
     automatable: true,
     frequency: "Annual",
+    scf: ["TPM-02", "TPM-04", "TPM-08"],
     map: {
       iso27001: ["A.5.19", "A.5.21"],
       soc2: ["CC9.2"],
-      csf2: ["GV.SC-01", "GV.SC-02", "GV.SC-04", "ID.AM-04"],
+      csf2: ["GV.SC-01", "GV.SC-02", "GV.SC-04", "ID.AM-04", "GV.SC-03"],
       nist80053: ["SR-2", "SA-9"],
       pci4: ["12.8"],
       cisv8: ["15.1", "15.2"],
@@ -1284,10 +1499,11 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Vendor security assessments", "Collected SOC 2 / ISO certificates", "Annual vendor review"],
     automatable: true,
     frequency: "Annual",
+    scf: ["TPM-10", "TPM-15"],
     map: {
       iso27001: ["A.5.19", "A.5.22", "A.5.23"],
       soc2: ["CC9.2"],
-      csf2: ["GV.SC-06", "GV.SC-07", "ID.RA-10", "DE.CM-06"],
+      csf2: ["GV.SC-06", "GV.SC-07", "ID.RA-10", "DE.CM-06", "GV.SC-09", "ID.RA-09"],
       nist80053: ["SR-6", "SA-9"],
       hipaa: ["164.308(b)(1)"],
       pci4: ["12.8"],
@@ -1304,13 +1520,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Executed contracts with security clauses", "Data processing agreements", "Business associate agreements"],
     automatable: false,
     frequency: "Event-driven",
+    scf: ["TPM-14", "PRI-14"],
     map: {
       iso27001: ["A.5.20", "A.5.21"],
-      soc2: ["CC9.2", "P6.4"],
+      soc2: ["CC9.2", "P6.4", "P6.5"],
       csf2: ["GV.SC-05", "GV.SC-08"],
       nist80053: ["SA-4", "SR-3", "PS-7"],
-      hipaa: ["164.308(b)(1)", "164.410"],
-      pci4: ["12.8"],
+      hipaa: ["164.308(b)(1)", "164.410", "164.308(b)(3)", "164.314(a)(1)"],
+      pci4: ["12.8", "12.9"],
       gdpr: ["Art. 28"],
       cisv8: ["15.4"],
       dpdp: ["Sec. 8(2)"],
@@ -1325,12 +1542,17 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Vendor termination checklist", "Data destruction confirmation"],
     automatable: false,
     frequency: "Event-driven",
+    scf: ["CLD-04", "TPM-17"],
     map: {
       iso27001: ["A.5.22"],
       soc2: ["CC9.2"],
       csf2: ["GV.SC-10"],
       nist80053: ["SA-9"],
       cisv8: ["15.7"],
+    },
+    rel: {
+      "csf2:GV.SC-10": "equal",
+      "cisv8:15.7": "equal",
     },
   },
 
@@ -1344,14 +1566,19 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Incident response plan", "Escalation matrix", "Annual plan review"],
     automatable: false,
     frequency: "Annual",
+    scf: ["IRO-02", "IRO-08"],
     map: {
       iso27001: ["A.5.24"],
       soc2: ["CC7.3", "CC7.4"],
-      csf2: ["ID.IM-04", "RS.MA-01"],
+      csf2: ["ID.IM-04", "RS.MA-01", "RS.MA-05"],
       nist80053: ["IR-8", "IR-4"],
-      hipaa: ["164.308(a)(6)(ii)"],
+      hipaa: ["164.308(a)(6)(ii)", "164.308(a)(6)(i)"],
       pci4: ["12.10"],
       cisv8: ["17.1", "17.4"],
+    },
+    rel: {
+      "nist80053:IR-8": "equal",
+      "iso27001:A.5.24": "equal",
     },
   },
   {
@@ -1363,14 +1590,15 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Incident tickets / register", "Reporting channel (e.g. #security, email)", "Triage records"],
     automatable: true,
     frequency: "Event-driven",
+    scf: ["IRO-04", "IRO-06"],
     map: {
       iso27001: ["A.6.8", "A.5.25", "A.5.26"],
       soc2: ["CC7.3", "CC7.4"],
-      csf2: ["DE.AE-04", "DE.AE-08", "RS.MA-02", "RS.MA-03", "RS.MA-04", "RS.MI-01", "RS.MI-02"],
+      csf2: ["DE.AE-04", "DE.AE-08", "RS.MA-02", "RS.MA-03", "RS.MA-04", "RS.MI-01", "RS.MI-02", "RS.AN-08"],
       nist80053: ["IR-4", "IR-5", "IR-6"],
-      hipaa: ["164.308(a)(6)(ii)"],
+      hipaa: ["164.308(a)(6)(ii)", "164.308(a)(6)(i)"],
       pci4: ["12.10"],
-      cisv8: ["17.2", "17.4"],
+      cisv8: ["17.2", "17.4", "17.3"],
     },
   },
   {
@@ -1382,12 +1610,16 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Forensics procedure", "Chain of custody forms"],
     automatable: false,
     frequency: "Event-driven",
+    scf: ["IRO-13"],
     map: {
       iso27001: ["A.5.28"],
       soc2: ["CC7.4"],
       csf2: ["RS.AN-06", "RS.AN-07"],
       nist80053: ["IR-4", "AU-9"],
-      pci4: ["10.2"],
+      pci4: [],
+    },
+    rel: {
+      "iso27001:A.5.28": "equal",
     },
   },
   {
@@ -1399,12 +1631,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Breach notification procedure", "Regulator notification templates", "Breach register"],
     automatable: false,
     frequency: "Event-driven",
+    scf: ["IRO-16", "IRO-22"],
     map: {
       iso27001: ["A.5.26", "A.5.5"],
       soc2: ["CC7.4", "P6.3", "P6.6", "CC2.3"],
       csf2: ["RS.CO-02", "RS.CO-03"],
       nist80053: ["IR-6"],
-      hipaa: ["164.404", "164.408", "164.410"],
+      hipaa: ["164.404", "164.408", "164.410", "164.406"],
       pci4: ["12.10"],
       gdpr: ["Art. 33", "Art. 34"],
       dpdp: ["Sec. 8(6)"],
@@ -1419,6 +1652,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Post-mortem reports", "Tabletop exercise reports"],
     automatable: false,
     frequency: "Annual",
+    scf: ["IRO-09", "IRO-14"],
     map: {
       iso27001: ["A.5.27"],
       soc2: ["CC7.5", "CC4.2"],
@@ -1426,6 +1660,9 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["IR-3", "IR-4"],
       pci4: ["12.10"],
       cisv8: ["17.7", "17.8"],
+    },
+    rel: {
+      "soc2:CC4.2": "intersects_with",
     },
   },
 
@@ -1439,12 +1676,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Business impact analysis", "BC/DR plan", "RTO/RPO definitions"],
     automatable: false,
     frequency: "Annual",
+    scf: ["BCD-02", "RSK-08"],
     map: {
       iso27001: ["A.5.29", "A.5.30"],
       soc2: ["CC9.1", "A1.2", "CC7.5"],
-      csf2: ["ID.IM-04", "RC.RP-01", "RC.RP-02", "GV.OC-04"],
+      csf2: ["ID.IM-04", "RC.RP-01", "RC.RP-02", "GV.OC-04", "RC.RP-04", "RS.MA-05"],
       nist80053: ["CP-2"],
-      hipaa: ["164.308(a)(7)(ii)(B)", "164.308(a)(7)(ii)(C)", "164.308(a)(7)(ii)(E)"],
+      hipaa: ["164.308(a)(7)(ii)(B)", "164.308(a)(7)(ii)(C)", "164.308(a)(7)(ii)(E)", "164.308(a)(7)(i)", "164.310(a)(2)(i)"],
       pci4: ["12.10"],
     },
   },
@@ -1457,13 +1695,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Backup configuration", "Backup job success reports", "Cross-region / immutable storage settings"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["BCD-24", "BCD-24.2", "BCD-24.3"],
     map: {
       iso27001: ["A.8.13"],
       soc2: ["A1.2", "CC7.5"],
       csf2: ["PR.DS-11"],
       nist80053: ["CP-9", "CP-6"],
-      hipaa: ["164.308(a)(7)(ii)(A)"],
-      cisv8: ["11.1", "11.2", "11.3"],
+      hipaa: ["164.308(a)(7)(ii)(A)", "164.310(d)(2)(iv)"],
+      cisv8: ["11.1", "11.2", "11.3", "11.4"],
       gdpr: ["Art. 32"],
     },
   },
@@ -1476,6 +1715,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Restore test results", "DR test report", "Lessons learned"],
     automatable: false,
     frequency: "Annual",
+    scf: ["BCD-10", "BCD-31.1", "BCD-32"],
     map: {
       iso27001: ["A.5.30", "A.8.13"],
       soc2: ["A1.3"],
@@ -1494,6 +1734,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Multi-AZ architecture", "Uptime/SLA reports", "Failover configuration"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["BCD-13", "BCD-21"],
     map: {
       iso27001: ["A.8.14"],
       soc2: ["A1.1", "A1.2"],
@@ -1510,11 +1751,15 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Status page history", "Customer communication templates"],
     automatable: true,
     frequency: "Event-driven",
+    scf: ["BCD-06"],
     map: {
       iso27001: ["7.4", "A.5.29"],
       soc2: ["CC2.3", "CC7.5"],
       csf2: ["RC.CO-03", "RC.CO-04", "RS.MA-05"],
       nist80053: ["CP-2"],
+    },
+    rel: {
+      "csf2:RS.MA-05": "intersects_with",
     },
   },
 
@@ -1528,13 +1773,18 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Published privacy notice", "Notice version history"],
     automatable: false,
     frequency: "Annual",
+    scf: ["PRI-21", "PRI-22"],
     map: {
       iso27001: ["A.5.34"],
       soc2: ["P1.1"],
       csf2: ["GV.OC-03"],
       nist80053: ["PT-5"],
-      gdpr: ["Art. 12", "Art. 13"],
+      gdpr: ["Art. 12", "Art. 13", "Art. 14"],
       dpdp: ["Sec. 5"],
+    },
+    rel: {
+      "nist80053:PT-5": "equal",
+      "soc2:P1.1": "equal",
     },
   },
   {
@@ -1546,12 +1796,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Lawful basis register", "Consent records", "Consent withdrawal flow"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["PRI-12", "PRI-24", "PRI-24.3", "PRI-27.1"],
     map: {
       iso27001: ["A.5.34", "A.5.31"],
-      soc2: ["P2.1", "P3.1", "P4.1", "P6.1"],
+      soc2: ["P2.1", "P3.1", "P4.1", "P6.1", "P3.2"],
       csf2: ["GV.OC-03"],
       nist80053: ["PT-2", "PT-3", "PT-4"],
-      gdpr: ["Art. 6", "Art. 7", "Art. 9", "Art. 5"],
+      gdpr: ["Art. 6", "Art. 7", "Art. 9", "Art. 5", "Art. 8", "Art. 10"],
       dpdp: ["Sec. 4", "Sec. 6", "Sec. 7", "Sec. 9"],
     },
   },
@@ -1564,13 +1815,14 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["DSAR procedure", "DSAR request log with response times"],
     automatable: true,
     frequency: "Event-driven",
+    scf: ["PRI-39", "PRI-39.3", "PRI-40", "PRI-41.1", "PRI-35", "PRI-36"],
     map: {
       iso27001: ["A.5.34"],
-      soc2: ["P5.1", "P5.2", "P7.1"],
+      soc2: ["P5.1", "P5.2", "P7.1", "P6.2", "P6.7"],
       csf2: ["GV.OC-03"],
       nist80053: ["PT-3"],
-      gdpr: ["Art. 12", "Art. 15", "Art. 16", "Art. 17", "Art. 20", "Art. 21"],
-      dpdp: ["Sec. 11", "Sec. 12"],
+      gdpr: ["Art. 12", "Art. 15", "Art. 16", "Art. 17", "Art. 20", "Art. 21", "Art. 18", "Art. 19", "Art. 22"],
+      dpdp: ["Sec. 11", "Sec. 12", "Sec. 8(3)", "Sec. 14"],
     },
   },
   {
@@ -1582,12 +1834,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["DPIA records", "Privacy review in SDLC", "Data minimization decisions"],
     automatable: false,
     frequency: "Event-driven",
+    scf: ["RSK-19", "PRI-31.1"],
     map: {
       iso27001: ["A.5.34", "A.8.26"],
       soc2: ["P3.1"],
       csf2: ["ID.RA-04"],
       nist80053: ["RA-3", "SA-8"],
-      gdpr: ["Art. 25", "Art. 35", "Art. 5"],
+      gdpr: ["Art. 25", "Art. 35", "Art. 5", "Art. 36"],
       dpdp: ["Sec. 10", "Sec. 8(4)"],
     },
   },
@@ -1600,12 +1853,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["DPO appointment", "Published contact details", "Grievance log"],
     automatable: false,
     frequency: "Annual",
+    scf: ["PRI-03.2", "CPL-22"],
     map: {
       iso27001: ["A.5.34", "A.5.2"],
       soc2: ["P8.1"],
       csf2: ["GV.RR-02"],
-      gdpr: ["Art. 37"],
-      dpdp: ["Sec. 8(10)", "Sec. 13", "Sec. 10"],
+      gdpr: ["Art. 37", "Art. 27", "Art. 38", "Art. 39"],
+      dpdp: ["Sec. 8(10)", "Sec. 13", "Sec. 10", "Sec. 8(9)"],
     },
   },
   {
@@ -1617,12 +1871,13 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Transfer impact assessments", "Executed SCCs", "Data residency map"],
     automatable: false,
     frequency: "Annual",
+    scf: ["DCH-30", "DCH-32"],
     map: {
       iso27001: ["A.5.14", "A.5.34"],
       soc2: ["P6.1"],
       csf2: ["GV.OC-03"],
       nist80053: ["CM-12"],
-      gdpr: ["Art. 44", "Art. 46"],
+      gdpr: ["Art. 44", "Art. 46", "Art. 45", "Art. 49"],
       dpdp: ["Sec. 16"],
     },
   },
@@ -1637,6 +1892,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Compliance obligations register", "Legal review records", "Software license tracking"],
     automatable: false,
     frequency: "Annual",
+    scf: ["CPL-02", "AST-13"],
     map: {
       iso27001: ["A.5.31", "A.5.32", "4.2"],
       soc2: ["CC3.1", "CC2.3"],
@@ -1644,7 +1900,7 @@ export const CONTROLS: UnifiedControl[] = [
       nist80053: ["PM-1"],
       pci4: ["12.4"],
       gdpr: ["Art. 24"],
-      dpdp: ["Sec. 8(4)"],
+      dpdp: ["Sec. 8(4)", "Sec. 8(1)"],
     },
   },
   {
@@ -1656,13 +1912,17 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Records retention schedule", "Evidence repository access controls"],
     automatable: true,
     frequency: "Annual",
+    scf: ["DCH-27", "CPL-07.3"],
     map: {
-      iso27001: ["A.5.33", "A.8.34", "7.5"],
+      iso27001: ["A.5.33", "A.8.34", "7.5.3"],
       soc2: ["CC2.1"],
       csf2: ["PR.DS-01"],
       nist80053: ["AU-11", "SI-12"],
       hipaa: ["164.316(b)(2)(i)"],
       pci4: ["10.5"],
+    },
+    rel: {
+      "csf2:PR.DS-01": "intersects_with",
     },
   },
   {
@@ -1674,6 +1934,7 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Cloud security policy", "Shared responsibility matrix", "CSPM reports"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["CLD-01", "CLD-02"],
     map: {
       iso27001: ["A.5.23"],
       soc2: ["CC9.2", "CC6.1"],
@@ -1691,12 +1952,16 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Script inventory with justification", "CSP / SRI configuration", "Change detection alerts"],
     automatable: true,
     frequency: "Continuous",
+    scf: ["WEB-05", "WEB-12"],
     map: {
       iso27001: ["A.8.16", "A.8.26"],
       soc2: ["CC7.1"],
       csf2: ["DE.CM-09"],
       nist80053: ["SI-4"],
       pci4: ["6.4", "11.6"],
+    },
+    rel: {
+      "pci4:11.6": "equal",
     },
   },
   {
@@ -1708,11 +1973,15 @@ export const CONTROLS: UnifiedControl[] = [
     evidence: ["Control owner reports", "Compliance dashboard snapshots"],
     automatable: true,
     frequency: "Quarterly",
+    scf: ["GOV-12"],
     map: {
       iso27001: ["9.1"],
-      soc2: ["CC2.1", "CC5.2"],
+      soc2: ["CC2.1"],
       csf2: ["GV.OV-03"],
       nist80053: ["CA-7"],
+    },
+    rel: {
+      "nist80053:CA-7": "intersects_with",
     },
   },
 ];

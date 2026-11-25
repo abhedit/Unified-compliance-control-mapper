@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { FRAMEWORK_BY_ID, type FrameworkId } from "@/data/frameworks";
-import type { ControlStatus, ReqStatus } from "@/lib/mapper";
+import { REL_META, type ControlStatus, type MatchStrength, type Relationship, type ReqStatus } from "@/lib/mapper";
 
 export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: ReactNode; actions?: ReactNode }) {
   return (
@@ -10,7 +10,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
         {subtitle && <p className="mt-1 max-w-3xl text-sm text-slate-500">{subtitle}</p>}
       </div>
-      {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
   );
 }
@@ -110,4 +110,42 @@ export function Empty({ children }: { children: ReactNode }) {
 export function fmtDate(ms: number | null | undefined) {
   if (!ms) return "—";
   return new Date(ms).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+const REL_STYLE: Record<Relationship, string> = {
+  equal: "bg-emerald-100 text-emerald-800 ring-emerald-200",
+  subset_of: "bg-sky-100 text-sky-800 ring-sky-200",
+  superset_of: "bg-amber-50 text-amber-800 ring-amber-200",
+  intersects_with: "bg-slate-100 text-slate-500 ring-slate-200",
+};
+
+/** NIST IR 8477 STRM relationship of a requirement to a control. */
+export function RelBadge({ rel, compact = false }: { rel: Relationship; compact?: boolean }) {
+  const m = REL_META[rel];
+  return (
+    <span title={`${m.label}: ${m.help}`} className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-semibold whitespace-nowrap ring-1 ring-inset ${REL_STYLE[rel]}`}>
+      <span className="font-mono">{m.symbol}</span>
+      {!compact && m.label}
+    </span>
+  );
+}
+
+const MATCH_STYLE: Record<MatchStrength, [string, string, string]> = {
+  equivalent: ["Equivalent", "bg-emerald-600 text-white", "Both requirements are equal in scope to the same control."],
+  strong: ["Strong", "bg-emerald-100 text-emerald-800", "Both requirements are fully covered by the same control."],
+  partial: ["Partial", "bg-amber-100 text-amber-800", "The requirements overlap through a control that covers only part of one of them."],
+  weak: ["Supporting", "bg-slate-100 text-slate-500", "Linked only through a supportive (∩) relationship."],
+};
+
+export function MatchBadge({ match }: { match: MatchStrength }) {
+  const [label, cls, help] = MATCH_STYLE[match];
+  return <span title={help} className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap ${cls}`}>{label}</span>;
+}
+
+export function ProvenanceMark({ corroborated }: { corroborated: boolean }) {
+  return corroborated ? (
+    <span title="Independently corroborated by the SCF reference crosswalk" className="text-[11px] font-semibold whitespace-nowrap text-emerald-700">✓ SCF</span>
+  ) : (
+    <span title="Analyst-asserted mapping (reviewed, not present in the reference crosswalk)" className="text-[11px] whitespace-nowrap text-slate-400">analyst</span>
+  );
 }

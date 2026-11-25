@@ -3,7 +3,8 @@
 import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { FRAMEWORKS, FRAMEWORK_BY_ID, type FrameworkId } from "@/data/frameworks";
-import { buildIndex, equivalentsForControls, key, type ControlLike, type ControlStatus } from "@/lib/mapper";
+import { REL_META, buildIndex, equivalentsForControls, isCorroborated, key, relationship, type ControlLike, type ControlStatus } from "@/lib/mapper";
+import { MatchBadge, ProvenanceMark, RelBadge } from "@/components/ui";
 
 type Selection = { kind: "req"; fw: FrameworkId; code: string } | { kind: "control"; id: string } | null;
 
@@ -31,6 +32,7 @@ export default function MapperExplorer({ controls, frameworks, statuses, initial
   const [query, setQuery] = useState("");
   const [sel, setSel] = useState<Selection>(initial);
   const [copied, setCopied] = useState(false);
+  const [showWeak, setShowWeak] = useState(false);
   const index = useMemo(() => buildIndex(controls), [controls]);
   const byId = useMemo(() => Object.fromEntries(controls.map((c) => [c.id, c])), [controls]);
 
@@ -59,17 +61,28 @@ export default function MapperExplorer({ controls, frameworks, statuses, initial
     return index.get(key(sel.fw, sel.code)) ?? [];
   }, [sel, index, byId]);
 
-  const equivalents = useMemo(
+  const allEquivalents = useMemo(
     () => (sel ? equivalentsForControls(linked, sel.kind === "req" ? sel.fw : undefined, sel.kind === "req" ? sel.code : undefined) : {}),
     [sel, linked],
   );
+  const hiddenWeak = Object.values(allEquivalents).flat().filter((e) => e!.match === "weak").length;
+  const equivalents = useMemo(() => {
+    if (showWeak) return allEquivalents;
+    return Object.fromEntries(Object.entries(allEquivalents).map(([f, list]) => [f, list!.filter((e) => e.match !== "weak")]));
+  }, [allEquivalents, showWeak]) as typeof allEquivalents;
 
   const shownFw = fwList.filter((f) => equivalents[f.id]?.length);
   const totalEquivalents = shownFw.reduce((n, f) => n + (equivalents[f.id]?.length ?? 0), 0);
 
   function exportCsv() {
-    const rows = [["Framework", "Requirement", "Title", "Via unified controls"]];
-    for (const f of shownFw) for (const e of equivalents[f.id] ?? []) rows.push([f.shortName, e.code, e.title, e.via.join(" ")]);
+    const rows = [["Framework", "Requirement", "Title", "Match strength", "Via unified controls (STRM relationship)", "SCF-corroborated"]];
+    for (const f of shownFw)
+      for (const e of equivalents[f.id] ?? [])
+        rows.push([
+          f.shortName, e.code, e.title, e.match ?? "",
+          e.links.map((l) => `${l.control} (${REL_META[l.rel].label})`).join("; "),
+          e.links.some((l) => l.corroborated) ? "yes" : "no",
+        ]);
     const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
@@ -168,7 +181,7 @@ export default function MapperExplorer({ controls, frameworks, statuses, initial
                     </h2>
                   </>
                 )}
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-slate-500" data-summary>
                   Implement <b className="text-slate-800">{linked.length}</b> unified control{linked.length === 1 ? "" : "s"} once → satisfies{" "}
                   <b className="text-slate-800">{totalEquivalents}</b> requirement{totalEquivalents === 1 ? "" : "s"} across{" "}
                   <b className="text-slate-800">{shownFw.length}</b> framework{shownFw.length === 1 ? "" : "s"}.
@@ -202,6 +215,12 @@ export default function MapperExplorer({ controls, frameworks, statuses, initial
                       {c.custom && <span className="rounded bg-violet-100 px-1.5 text-[10px] font-semibold text-violet-700">CUSTOM</span>}
                       <span className="text-sm font-semibold">{c.name}</span>
                     </div>
+                    {sel.kind === "req" && (
+                      <div className="mt-1.5 flex items-center gap-2">
+                        <RelBadge rel={relationship(c, sel.fw, sel.code)} />
+                        {!c.custom && <ProvenanceMark corroborated={isCorroborated(c.id, sel.fw, sel.code)} />}
+                      </div>
+                    )}
                     <p className="mt-1 text-xs leading-relaxed text-slate-600">{c.description}</p>
                   </div>
                 );
@@ -215,6 +234,22 @@ export default function MapperExplorer({ controls, frameworks, statuses, initial
               })}
               {linked.length === 0 && <p className="text-sm text-slate-500">No unified control mapped yet.</p>}
             </div>
+          </div>
+        )}
+
+        {sel && (
+          <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-slate-500">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-semibold text-slate-600">Relationship (NIST IR 8477):</span>
+              {(["equal", "subset_of", "superset_of", "intersects_with"] as const).map((r) => <RelBadge key={r} rel={r} />)}
+              <Link href="/methodology" className="font-semibold text-brand-600 hover:underline">Methodology →</Link>
+            </div>
+            {sel.kind === "req" && hiddenWeak > 0 && (
+              <label className="flex items-center gap-1.5">
+                <input type="checkbox" checked={showWeak} onChange={(e) => setShowWeak(e.target.checked)} />
+                Show {hiddenWeak} supporting-only link{hiddenWeak === 1 ? "" : "s"}
+              </label>
+            )}
           </div>
         )}
 
@@ -246,8 +281,17 @@ export default function MapperExplorer({ controls, frameworks, statuses, initial
                         </span>
                         <span className="flex-1 text-slate-700">
                           {e.title}
-                          {linked.length > 1 && <span className="block text-[11px] text-slate-400">via {e.via.join(", ")}</span>}
+                          <span className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-400">
+                            {e.links.map((l) => (
+                              <span key={l.control} className="inline-flex items-center gap-1">
+                                {linked.length > 1 && <span>{l.control}</span>}
+                                <RelBadge rel={l.rel} compact />
+                              </span>
+                            ))}
+                            <ProvenanceMark corroborated={e.links.some((l) => l.corroborated)} />
+                          </span>
                         </span>
+                        {e.match && <MatchBadge match={e.match} />}
                       </button>
                     </li>
                   ))}

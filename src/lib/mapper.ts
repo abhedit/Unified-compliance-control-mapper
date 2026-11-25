@@ -1,9 +1,12 @@
 // Pure mapping engine: no I/O. Works on any list of controls (library + custom).
-import { FRAMEWORKS, FRAMEWORK_BY_ID, type FrameworkId, type Requirement } from "@/data/frameworks";
-import type { UnifiedControl } from "@/data/controls";
+import { FRAMEWORKS, FRAMEWORK_BY_ID, type FrameworkId, type Requirement } from "../data/frameworks.ts";
+import { CONTROLS, type Relationship, type UnifiedControl } from "../data/controls.ts";
+import { CORROBORATED } from "../data/provenance.ts";
 
+export type { Relationship };
 export type ControlStatus = "not_started" | "in_progress" | "implemented" | "not_applicable";
 export type ReqStatus = "met" | "partial" | "gap" | "not_applicable";
+export type MatchStrength = "equivalent" | "strong" | "partial" | "weak";
 
 export interface ControlLike {
   id: string;
@@ -11,10 +14,18 @@ export interface ControlLike {
   domain: string;
   description: string;
   map: UnifiedControl["map"];
+  rel?: UnifiedControl["rel"];
   custom?: boolean;
 }
 
 export const key = (fw: FrameworkId, code: string) => `${fw}:${code}`;
+
+export const REL_META: Record<Relationship, { symbol: string; label: string; full: boolean; strength: number; help: string }> = {
+  equal: { symbol: "=", label: "Equal", full: true, strength: 10, help: "Requirement and control have the same scope." },
+  subset_of: { symbol: "⊂", label: "Subset of", full: true, strength: 8, help: "Requirement is fully contained in the control — implementing the control covers it." },
+  superset_of: { symbol: "⊃", label: "Superset of", full: false, strength: 5, help: "Requirement is broader — the control covers part of it alongside the other mapped controls." },
+  intersects_with: { symbol: "∩", label: "Intersects", full: false, strength: 3, help: "Control supports part of the requirement; it is not required for coverage." },
+};
 
 export function buildIndex(controls: ControlLike[]) {
   const byReq = new Map<string, ControlLike[]>();
@@ -31,8 +42,44 @@ export function buildIndex(controls: ControlLike[]) {
   return byReq;
 }
 
+// Derived STRM for library links without an explicit relationship:
+// a requirement served by exactly one non-supportive control is a subset of it (full coverage);
+// a requirement split across several controls is a superset of each (composite coverage).
+const LIB_INDEX = buildIndex(CONTROLS);
+const DERIVED = new Map<string, Relationship>();
+for (const [k, list] of LIB_INDEX) {
+  const core = list.filter((c) => c.rel?.[k] !== "intersects_with");
+  for (const c of list) DERIVED.set(`${c.id}|${k}`, c.rel?.[k] ?? (core.length === 1 ? "subset_of" : "superset_of"));
+}
+
+/** STRM relationship of framework requirement (fw, code) to control c. */
+export function relationship(c: ControlLike, fw: FrameworkId, code: string): Relationship {
+  const k = key(fw, code);
+  return c.rel?.[k] ?? (c.custom ? "superset_of" : (DERIVED.get(`${c.id}|${k}`) ?? "superset_of"));
+}
+
+/** Whether an independent reference (SCF) corroborates this library link. */
+export const isCorroborated = (controlId: string, fw: FrameworkId, code: string) => CORROBORATED.has(`${controlId}|${fw}|${code}`);
+
+/** How closely two requirements correspond when linked through a common control. */
+export function matchStrength(a: Relationship, b: Relationship): MatchStrength {
+  if (a === "intersects_with" || b === "intersects_with") return "weak";
+  if (a === "equal" && b === "equal") return "equivalent";
+  if (REL_META[a].full && REL_META[b].full) return "strong";
+  return "partial";
+}
+const STRENGTH_RANK: Record<MatchStrength, number> = { equivalent: 3, strong: 2, partial: 1, weak: 0 };
+export const strongest = (xs: MatchStrength[]) => xs.reduce<MatchStrength>((m, x) => (STRENGTH_RANK[x] > STRENGTH_RANK[m] ? x : m), "weak");
+
 export function findRequirement(fw: FrameworkId, code: string): Requirement | undefined {
   return FRAMEWORK_BY_ID[fw]?.requirements.find((r) => r.code === code);
+}
+
+export interface Link {
+  control: string;
+  rel: Relationship;
+  corroborated: boolean;
+  match?: MatchStrength; // relative to the source requirement, when there is one
 }
 
 export interface Equivalent {
@@ -40,6 +87,8 @@ export interface Equivalent {
   code: string;
   title: string;
   via: string[]; // control ids linking the requirement
+  links: Link[];
+  match?: MatchStrength; // strongest correspondence to the source requirement
 }
 
 /** Map one requirement across all other frameworks via shared unified controls. */
@@ -50,21 +99,29 @@ export function equivalentsForRequirement(controls: ControlLike[], fw: Framework
 }
 
 /** All requirements touched by a set of controls, grouped by framework. */
-export function equivalentsForControls(linked: ControlLike[], excludeFw?: FrameworkId, excludeCode?: string) {
+export function equivalentsForControls(linked: ControlLike[], sourceFw?: FrameworkId, sourceCode?: string) {
   const out = new Map<string, Equivalent>();
   for (const c of linked) {
+    const srcRel = sourceFw && sourceCode ? relationship(c, sourceFw, sourceCode) : undefined;
     for (const [f, codes] of Object.entries(c.map) as [FrameworkId, string[]][]) {
       for (const code of codes) {
-        if (f === excludeFw && code === excludeCode) continue;
+        if (f === sourceFw && code === sourceCode) continue;
+        const rel = relationship(c, f, code);
+        const link: Link = { control: c.id, rel, corroborated: !c.custom && isCorroborated(c.id, f, code), match: srcRel ? matchStrength(srcRel, rel) : undefined };
         const k = key(f, code);
         const existing = out.get(k);
-        if (existing) existing.via.push(c.id);
-        else out.set(k, { framework: f, code, title: findRequirement(f, code)?.title ?? code, via: [c.id] });
+        if (existing) {
+          existing.via.push(c.id);
+          existing.links.push(link);
+        } else out.set(k, { framework: f, code, title: findRequirement(f, code)?.title ?? code, via: [c.id], links: [link] });
       }
     }
   }
   const grouped: Partial<Record<FrameworkId, Equivalent[]>> = {};
-  for (const e of out.values()) (grouped[e.framework] ??= []).push(e);
+  for (const e of out.values()) {
+    if (sourceFw) e.match = strongest(e.links.map((l) => l.match!));
+    (grouped[e.framework] ??= []).push(e);
+  }
   for (const fw of Object.keys(grouped) as FrameworkId[]) {
     const order = FRAMEWORK_BY_ID[fw].requirements.map((r) => r.code);
     grouped[fw]!.sort((a, b) => order.indexOf(a.code) - order.indexOf(b.code));
@@ -75,36 +132,53 @@ export function equivalentsForControls(linked: ControlLike[], excludeFw?: Framew
 /** Crosswalk A -> B: for each requirement in A, the B requirements sharing a control. */
 export function crosswalk(controls: ControlLike[], a: FrameworkId, b: FrameworkId) {
   const index = buildIndex(controls);
+  const order = FRAMEWORK_BY_ID[b].requirements.map((r) => r.code);
   return FRAMEWORK_BY_ID[a].requirements.map((req) => {
     const linked = index.get(key(a, req.code)) ?? [];
-    const targets = new Map<string, Set<string>>();
-    for (const c of linked) for (const code of c.map[b] ?? []) {
-      (targets.get(code) ?? targets.set(code, new Set()).get(code)!).add(c.id);
+    const targets = new Map<string, { via: string[]; matches: MatchStrength[] }>();
+    for (const c of linked) {
+      const ra = relationship(c, a, req.code);
+      for (const code of c.map[b] ?? []) {
+        const t = targets.get(code) ?? { via: [], matches: [] };
+        t.via.push(c.id);
+        t.matches.push(matchStrength(ra, relationship(c, b, code)));
+        targets.set(code, t);
+      }
     }
-    const order = FRAMEWORK_BY_ID[b].requirements.map((r) => r.code);
     return {
       requirement: req,
       controls: linked.map((c) => c.id),
       targets: [...targets.entries()]
         .sort((x, y) => order.indexOf(x[0]) - order.indexOf(y[0]))
-        .map(([code, via]) => ({ code, title: findRequirement(b, code)?.title ?? code, via: [...via] })),
+        .map(([code, t]) => ({ code, title: findRequirement(b, code)?.title ?? code, via: t.via, match: strongest(t.matches) })),
     };
   });
 }
 
-/** Share of A's requirements that are also touched by B (via a shared control). */
+/** Share of A's requirements that have a non-weak counterpart in B (via a shared control). */
 export function overlap(controls: ControlLike[], a: FrameworkId, b: FrameworkId) {
   const rows = crosswalk(controls, a, b);
-  const hit = rows.filter((r) => r.targets.length > 0).length;
+  const hit = rows.filter((r) => r.targets.some((t) => t.match !== "weak")).length;
   return rows.length ? hit / rows.length : 0;
 }
 
-export function requirementStatus(linked: ControlLike[], status: Record<string, ControlStatus>): ReqStatus {
-  const s = linked.map((c) => status[c.id] ?? "not_started").filter((x) => x !== "not_applicable");
-  if (linked.length && s.length === 0) return "not_applicable";
-  if (s.length === 0) return "gap";
-  if (s.every((x) => x === "implemented")) return "met";
-  if (s.some((x) => x === "implemented" || x === "in_progress")) return "partial";
+/**
+ * Requirement status from control status, honouring STRM:
+ *  - met when any fully-covering (equal / subset_of) control is implemented, or when every
+ *    required (non-supportive) mapped control is implemented;
+ *  - supportive (intersects_with) controls never block a requirement.
+ */
+export function requirementStatus(linked: ControlLike[], status: Record<string, ControlStatus>, fw?: FrameworkId, code?: string): ReqStatus {
+  const rel = (c: ControlLike) => (fw && code ? relationship(c, fw, code) : "superset_of");
+  const live = linked.filter((c) => (status[c.id] ?? "not_started") !== "not_applicable");
+  if (linked.length && live.length === 0) return "not_applicable";
+  if (live.length === 0) return "gap";
+  const st = (c: ControlLike) => status[c.id] ?? "not_started";
+  if (live.some((c) => REL_META[rel(c)].full && st(c) === "implemented")) return "met";
+  const required = live.filter((c) => rel(c) !== "intersects_with");
+  const core = required.length ? required : live;
+  if (core.every((c) => st(c) === "implemented")) return "met";
+  if (live.some((c) => st(c) === "implemented" || st(c) === "in_progress")) return "partial";
   return "gap";
 }
 
@@ -118,7 +192,7 @@ export function coverage(controls: ControlLike[], fw: FrameworkId, status: Recor
   const index = buildIndex(controls);
   const rows: CoverageRow[] = FRAMEWORK_BY_ID[fw].requirements.map((requirement) => {
     const linked = index.get(key(fw, requirement.code)) ?? [];
-    return { requirement, controls: linked, status: requirementStatus(linked, status) };
+    return { requirement, controls: linked, status: requirementStatus(linked, status, fw, requirement.code) };
   });
   const counted = rows.filter((r) => r.status !== "not_applicable");
   const met = counted.filter((r) => r.status === "met").length;

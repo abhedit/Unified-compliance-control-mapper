@@ -6,7 +6,8 @@ import { CONTROLS, CONTROL_BY_ID } from "@/data/controls";
 import { overlap } from "@/lib/mapper";
 
 const FEATURES = [
-  { icon: "🔗", title: "Map one control, everywhere", body: "Pick any requirement — ISO A.8.5, SOC 2 CC6.1, PCI 8.4 — and instantly see every equivalent requirement across all frameworks, linked through a single unified control." },
+  { icon: "🔗", title: "Map one control, everywhere", body: "Pick any requirement — ISO A.8.5, SOC 2 CC6.1, PCI 8.4 — and see every corresponding requirement across all frameworks, with match strength (equivalent, strong, partial) for each." },
+  { icon: "📐", title: "Standards-based mapping", body: "Every link is typed with a NIST IR 8477 set-theory relationship, anchored to the Secure Controls Framework and checked by automated integrity gates. Read the methodology." },
   { icon: "📊", title: "Multi-framework readiness", body: "Track each control's status once. Readiness for ISO 27001, SOC 2, HIPAA and more updates automatically, with met / partial / gap per requirement." },
   { icon: "🧮", title: "Crosswalk matrix", body: "Generate an A→B crosswalk between any two frameworks and see the overlap before you take on a new certification. Export to CSV for your auditor." },
   { icon: "✨", title: "Smart custom-control mapping", body: "Describe your own control in plain language; the similarity engine suggests the requirements it satisfies and flags duplicates in the library." },
@@ -37,7 +38,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 px-4 pt-16 pb-20 lg:grid-cols-2 lg:pt-24">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
-              New · NIST CSF 2.0, PCI DSS 4.0 &amp; India DPDP Act mappings
+              Mapped per NIST IR 8477 · independently corroborated against SCF
             </span>
             <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
               Implement a control once.<br />
@@ -139,7 +140,7 @@ export default function Home() {
               </thead>
               <tbody>
                 {[
-                  ["Mapping transparency", "Mappings mostly visible after purchase", "Public, explorable crosswalk with shareable links"],
+                  ["Mapping transparency", "Mappings mostly visible after purchase", "Public crosswalk with NIST IR 8477 relationship types and per-link provenance"],
                   ["Regional coverage", "US/EU-centric framework catalogs", "India DPDP Act included alongside GDPR, HIPAA, PCI"],
                   ["Price point", "Annual contracts, often five figures", "Self-serve monthly plans; free mapper forever"],
                   ["Consultants & MSPs", "Partner programs vary", "Partner plan for running many client workspaces"],
