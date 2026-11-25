@@ -1,0 +1,30 @@
+{
+  "name": "abhedit-unified-control-mapper",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Abhedit UCM - map one control across ISO 27001, SOC 2, NIST CSF, NIST 800-53, HIPAA, PCI DSS, GDPR, CIS v8 and DPDP.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "validate-data": "node --experimental-strip-types scripts/validate-data.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "dependencies": {
+    "next": "15.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/node": "^26.6.7",
+    "@types/react": "^19.3.1",
+    "@types/react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.5",
+    "typescript": "5.9"
+  }
+}

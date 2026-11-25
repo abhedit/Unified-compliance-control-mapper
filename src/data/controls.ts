@@ -1,0 +1,1722 @@
+import type { FrameworkId } from "./frameworks";
+
+// Abhedit Unified Control Library (UCL).
+// Each unified control is implemented and evidenced once, then mapped to the
+// equivalent requirements of every supported framework.
+// Mappings are reference crosswalks curated from public framework structures;
+// validate scoping decisions with your auditor.
+
+export type Domain =
+  | "Governance"
+  | "Risk Management"
+  | "Asset Management"
+  | "Human Resources"
+  | "Access Control"
+  | "Cryptography"
+  | "Physical Security"
+  | "Operations"
+  | "Network Security"
+  | "Logging & Monitoring"
+  | "Vulnerability Management"
+  | "Secure Development"
+  | "Vendor Management"
+  | "Incident Response"
+  | "Business Continuity"
+  | "Privacy"
+  | "Compliance";
+
+export interface UnifiedControl {
+  id: string;
+  name: string;
+  domain: Domain;
+  description: string;
+  evidence: string[];
+  automatable: boolean; // can evidence be collected via integrations
+  frequency: "Continuous" | "Quarterly" | "Annual" | "Event-driven";
+  map: Partial<Record<FrameworkId, string[]>>;
+}
+
+export const CONTROLS: UnifiedControl[] = [
+  // ───────────── Governance ─────────────
+  {
+    id: "GOV-01",
+    name: "Information security policy",
+    domain: "Governance",
+    description:
+      "A management-approved information security policy and topic-specific policies are published, communicated to personnel and reviewed at least annually.",
+    evidence: ["Approved policy set with version history", "Annual review sign-off", "Policy acknowledgement records"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["5.2", "A.5.1", "7.5"],
+      soc2: ["CC5.3", "CC2.2"],
+      csf2: ["GV.PO-01", "GV.PO-02"],
+      nist80053: ["AC-1", "PM-1"],
+      hipaa: ["164.316(a)", "164.316(b)(1)"],
+      pci4: ["12.1"],
+      gdpr: ["Art. 24"],
+      dpdp: ["Sec. 8(4)"],
+    },
+  },
+  {
+    id: "GOV-02",
+    name: "Security roles, responsibilities and ownership",
+    domain: "Governance",
+    description:
+      "A security owner (e.g. CISO) is formally assigned; security roles, responsibilities and reporting lines are defined and communicated.",
+    evidence: ["Org chart with security reporting lines", "RACI / role descriptions", "Appointment letter of security officer"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["5.3", "A.5.2"],
+      soc2: ["CC1.3", "CC1.5"],
+      csf2: ["GV.RR-02", "GV.RR-03"],
+      nist80053: ["PM-2"],
+      hipaa: ["164.308(a)(2)"],
+      pci4: ["12.4"],
+      cisv8: ["17.1"],
+    },
+  },
+  {
+    id: "GOV-03",
+    name: "Leadership commitment and management review",
+    domain: "Governance",
+    description:
+      "Leadership/board oversees the security program; management reviews program performance, risks and resources at planned intervals.",
+    evidence: ["Management review minutes", "Board/committee security briefings", "Approved security budget"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["5.1", "9.3", "A.5.4"],
+      soc2: ["CC1.2", "CC1.1"],
+      csf2: ["GV.RR-01", "GV.OV-01", "GV.OV-02", "GV.OV-03", "GV.OC-01"],
+      nist80053: ["PM-1"],
+      pci4: ["12.4"],
+      gdpr: ["Art. 24"],
+    },
+  },
+  {
+    id: "GOV-04",
+    name: "ISMS scope, context and objectives",
+    domain: "Governance",
+    description:
+      "The scope of the security program, internal/external issues, interested parties and measurable security objectives are defined and documented.",
+    evidence: ["Scope statement", "Context & interested parties register", "Security objectives with KPIs"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["4.1", "4.2", "4.3", "6.2"],
+      soc2: ["CC3.1", "CC2.3"],
+      csf2: ["GV.OC-02", "GV.OC-04", "GV.OC-05", "GV.RM-01"],
+      nist80053: ["PL-2"],
+      pci4: ["12.5"],
+    },
+  },
+  {
+    id: "GOV-05",
+    name: "Code of conduct and segregation of duties",
+    domain: "Governance",
+    description:
+      "A code of conduct is acknowledged by personnel; conflicting duties are segregated or compensated to reduce the risk of misuse.",
+    evidence: ["Signed code of conduct", "SoD matrix", "Compensating control documentation"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.3"],
+      soc2: ["CC1.1", "CC5.1"],
+      csf2: ["PR.AA-05"],
+      nist80053: ["AC-5"],
+      pci4: ["7.2"],
+    },
+  },
+  {
+    id: "GOV-06",
+    name: "Documented operating procedures",
+    domain: "Governance",
+    description:
+      "Operating procedures for information processing facilities and security activities are documented, version-controlled and available to personnel.",
+    evidence: ["Runbooks / SOP repository", "Document control records"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.37", "7.5", "8.1"],
+      soc2: ["CC5.3"],
+      csf2: ["GV.PO-01"],
+      nist80053: ["PL-2"],
+      hipaa: ["164.316(b)(1)", "164.316(b)(2)(i)"],
+      pci4: ["12.1"],
+    },
+  },
+  {
+    id: "GOV-07",
+    name: "Security communication and threat community engagement",
+    domain: "Governance",
+    description:
+      "Security information is communicated internally and externally; contacts with authorities and special interest groups are maintained.",
+    evidence: ["Communication plan", "Authority/regulator contact list", "Memberships (ISACs, CERT-In, etc.)"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["7.4", "A.5.5", "A.5.6"],
+      soc2: ["CC2.2", "CC2.3"],
+      csf2: ["ID.RA-02", "RS.CO-03"],
+      nist80053: ["PM-15"],
+      cisv8: ["17.2"],
+    },
+  },
+
+  // ───────────── Risk Management ─────────────
+  {
+    id: "RSK-01",
+    name: "Risk assessment methodology and register",
+    domain: "Risk Management",
+    description:
+      "A documented methodology defines risk criteria and appetite; risks are identified, analyzed and recorded in a risk register at least annually and upon significant change.",
+    evidence: ["Risk methodology", "Risk register", "Annual risk assessment report"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["6.1.2"],
+      soc2: ["CC3.1", "CC3.2", "CC3.3"],
+      csf2: ["GV.RM-02", "GV.RM-03", "GV.RM-06", "ID.RA-03", "ID.RA-04", "ID.RA-05"],
+      nist80053: ["RA-3", "PM-9"],
+      hipaa: ["164.308(a)(1)(ii)(A)"],
+      pci4: ["12.3"],
+      gdpr: ["Art. 32"],
+      dpdp: ["Sec. 8(5)"],
+    },
+  },
+  {
+    id: "RSK-02",
+    name: "Risk treatment and Statement of Applicability",
+    domain: "Risk Management",
+    description:
+      "Risk treatment plans select controls, assign owners and due dates; a Statement of Applicability justifies inclusion/exclusion of controls; residual risk is accepted by owners.",
+    evidence: ["Risk treatment plan", "Statement of Applicability", "Risk acceptance sign-offs", "POA&M"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["6.1.3"],
+      soc2: ["CC5.1", "CC9.1"],
+      csf2: ["GV.RM-04", "ID.RA-06"],
+      nist80053: ["RA-7", "CA-5"],
+      hipaa: ["164.308(a)(1)(ii)(B)"],
+      pci4: ["12.3"],
+    },
+  },
+  {
+    id: "RSK-03",
+    name: "Change risk and exception management",
+    domain: "Risk Management",
+    description:
+      "Significant internal/external changes and policy exceptions are assessed for risk impact, approved, time-bound and tracked.",
+    evidence: ["Exception register", "Change risk assessments"],
+    automatable: true,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["6.1.2"],
+      soc2: ["CC3.4"],
+      csf2: ["ID.RA-07"],
+      nist80053: ["CM-4"],
+    },
+  },
+  {
+    id: "RSK-04",
+    name: "Threat intelligence",
+    domain: "Risk Management",
+    description:
+      "Threat intelligence relevant to the organization is collected, analyzed and used to inform risk assessments and detection.",
+    evidence: ["Threat intel feed subscriptions", "Threat briefings / advisories log"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.5.7"],
+      soc2: ["CC3.2", "CC7.1"],
+      csf2: ["ID.RA-02", "ID.RA-03", "DE.AE-07"],
+      nist80053: ["PM-16", "SI-5"],
+    },
+  },
+  {
+    id: "RSK-05",
+    name: "Internal audit and control monitoring",
+    domain: "Risk Management",
+    description:
+      "Controls are evaluated through internal audits and continuous monitoring; deficiencies are reported to management and tracked to closure.",
+    evidence: ["Internal audit plan and reports", "Continuous control monitoring dashboard", "Deficiency tracker"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["9.1", "9.2", "A.5.35", "A.5.36"],
+      soc2: ["CC4.1", "CC4.2"],
+      csf2: ["GV.OV-03", "ID.IM-01"],
+      nist80053: ["CA-2", "CA-7"],
+      hipaa: ["164.308(a)(8)"],
+      pci4: ["12.4"],
+      gdpr: ["Art. 24", "Art. 32"],
+      dpdp: ["Sec. 10"],
+    },
+  },
+  {
+    id: "RSK-06",
+    name: "Corrective action and continual improvement",
+    domain: "Risk Management",
+    description:
+      "Nonconformities from audits, incidents and tests are root-caused, corrected and used to continually improve the program.",
+    evidence: ["Corrective action register (CAPA)", "Lessons-learned records"],
+    automatable: true,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["10.1", "10.2"],
+      soc2: ["CC4.2"],
+      csf2: ["ID.IM-01", "ID.IM-02", "ID.IM-03"],
+      nist80053: ["CA-5"],
+    },
+  },
+
+  // ───────────── Asset Management ─────────────
+  {
+    id: "AST-01",
+    name: "Hardware and endpoint inventory",
+    domain: "Asset Management",
+    description:
+      "An inventory of hardware assets (endpoints, servers, network devices) with owners is maintained automatically; unauthorized assets are addressed.",
+    evidence: ["MDM / CMDB asset export", "Asset owner assignment", "Unauthorized asset tickets"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.5.9"],
+      soc2: ["CC6.1"],
+      csf2: ["ID.AM-01", "ID.AM-08"],
+      nist80053: ["CM-8"],
+      pci4: ["12.5"],
+      cisv8: ["1.1", "1.2"],
+    },
+  },
+  {
+    id: "AST-02",
+    name: "Software, SaaS and cloud service inventory",
+    domain: "Asset Management",
+    description:
+      "An inventory of software, cloud resources and SaaS services is maintained; unauthorized software is removed or approved.",
+    evidence: ["Cloud resource inventory", "SaaS discovery report", "Software allow-list"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.5.9", "A.5.23"],
+      soc2: ["CC6.1"],
+      csf2: ["ID.AM-02", "ID.AM-08"],
+      nist80053: ["CM-8"],
+      pci4: ["12.5"],
+      cisv8: ["2.1", "2.3"],
+    },
+  },
+  {
+    id: "AST-03",
+    name: "Data inventory, data flows and records of processing",
+    domain: "Asset Management",
+    description:
+      "Sensitive and personal data stores, data flows and processing activities are documented, including location and purpose.",
+    evidence: ["Data inventory / data map", "Data flow diagrams", "Records of processing activities (RoPA)"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.9", "A.5.34"],
+      soc2: ["C1.1", "P3.1"],
+      csf2: ["ID.AM-03", "ID.AM-07"],
+      nist80053: ["CM-12"],
+      pci4: ["12.5"],
+      gdpr: ["Art. 30"],
+      cisv8: ["3.1", "3.2"],
+      dpdp: ["Sec. 8(4)"],
+    },
+  },
+  {
+    id: "AST-04",
+    name: "Data classification and labelling",
+    domain: "Asset Management",
+    description:
+      "Information is classified by sensitivity and criticality and labelled/handled according to its classification.",
+    evidence: ["Data classification policy", "Labelling standard", "Classified asset register"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.12", "A.5.13"],
+      soc2: ["C1.1"],
+      csf2: ["ID.AM-05"],
+      nist80053: ["RA-2"],
+      hipaa: ["164.308(a)(7)(ii)(E)"],
+      cisv8: ["3.1"],
+    },
+  },
+  {
+    id: "AST-05",
+    name: "Acceptable use and return of assets",
+    domain: "Asset Management",
+    description:
+      "Rules for acceptable use of information and assets are documented and acknowledged; assets are returned upon termination.",
+    evidence: ["Acceptable use policy acknowledgements", "Asset return checklist"],
+    automatable: true,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.5.10", "A.5.11"],
+      soc2: ["CC2.2", "CC6.5"],
+      csf2: ["GV.PO-01"],
+      nist80053: ["PL-4"],
+      hipaa: ["164.310(b)"],
+      pci4: ["12.2"],
+    },
+  },
+  {
+    id: "AST-06",
+    name: "Media handling and secure disposal",
+    domain: "Asset Management",
+    description:
+      "Removable media is controlled; equipment and media are sanitized or destroyed before disposal or re-use, with certificates retained.",
+    evidence: ["Media handling procedure", "Certificates of destruction", "Sanitization logs"],
+    automatable: false,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.7.10", "A.7.14"],
+      soc2: ["CC6.5", "C1.2"],
+      csf2: ["PR.PS-03", "ID.AM-08"],
+      nist80053: ["MP-2", "MP-6", "MP-7"],
+      hipaa: ["164.310(d)(1)", "164.310(d)(2)(i)", "164.310(d)(2)(ii)"],
+      pci4: ["9.4"],
+      cisv8: ["3.5"],
+    },
+  },
+
+  // ───────────── Human Resources ─────────────
+  {
+    id: "HRS-01",
+    name: "Background screening",
+    domain: "Human Resources",
+    description:
+      "Background verification checks are performed on candidates before hire, proportional to role risk and permitted by law.",
+    evidence: ["Background check completion records", "Screening policy"],
+    automatable: true,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.6.1"],
+      soc2: ["CC1.4"],
+      csf2: ["GV.RR-04"],
+      nist80053: ["PS-3"],
+      hipaa: ["164.308(a)(3)(ii)(B)"],
+      pci4: ["12.7"],
+    },
+  },
+  {
+    id: "HRS-02",
+    name: "Employment terms, NDAs and confidentiality agreements",
+    domain: "Human Resources",
+    description:
+      "Employment contracts and NDAs state security responsibilities; personnel and contractors sign them before access is granted.",
+    evidence: ["Signed employment agreements", "Signed NDAs"],
+    automatable: true,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.6.2", "A.6.6"],
+      soc2: ["CC1.1", "CC1.4"],
+      csf2: ["GV.RR-04"],
+      nist80053: ["PS-6", "PS-7"],
+      pci4: ["12.2"],
+    },
+  },
+  {
+    id: "HRS-03",
+    name: "Security awareness training",
+    domain: "Human Resources",
+    description:
+      "All personnel complete security and privacy awareness training at onboarding and annually, including phishing/social engineering.",
+    evidence: ["Training completion report", "Phishing simulation results", "Training content"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["7.2", "7.3", "A.6.3"],
+      soc2: ["CC1.4", "CC2.2"],
+      csf2: ["PR.AT-01"],
+      nist80053: ["AT-2"],
+      hipaa: ["164.308(a)(5)(i)"],
+      pci4: ["12.6", "5.4"],
+      cisv8: ["14.1", "14.2"],
+      dpdp: ["Sec. 8(4)"],
+    },
+  },
+  {
+    id: "HRS-04",
+    name: "Role-based security training",
+    domain: "Human Resources",
+    description:
+      "Personnel in specialized roles (developers, admins, incident responders) receive role-specific security training.",
+    evidence: ["Secure coding training records", "Incident responder training records"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["7.2", "A.6.3"],
+      soc2: ["CC1.4"],
+      csf2: ["PR.AT-02"],
+      nist80053: ["AT-3", "IR-2"],
+      pci4: ["6.2", "12.6"],
+    },
+  },
+  {
+    id: "HRS-05",
+    name: "Disciplinary process and sanctions",
+    domain: "Human Resources",
+    description:
+      "A formal, communicated disciplinary process applies to personnel who violate security policies.",
+    evidence: ["Sanctions policy", "HR handbook section"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.6.4"],
+      soc2: ["CC1.5"],
+      csf2: ["GV.RR-04"],
+      nist80053: ["PS-8"],
+      hipaa: ["164.308(a)(1)(ii)(C)"],
+    },
+  },
+  {
+    id: "HRS-06",
+    name: "Offboarding and role change",
+    domain: "Human Resources",
+    description:
+      "On termination or role change, access is revoked or adjusted promptly (e.g. within 24 hours), assets returned and post-employment duties communicated.",
+    evidence: ["Offboarding tickets with timestamps", "Access revocation evidence from IdP"],
+    automatable: true,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.6.5", "A.5.11", "A.5.18"],
+      soc2: ["CC6.2", "CC6.3"],
+      csf2: ["PR.AA-05", "GV.RR-04"],
+      nist80053: ["PS-4", "PS-5", "AC-2"],
+      hipaa: ["164.308(a)(3)(ii)(C)"],
+      pci4: ["8.2"],
+      cisv8: ["6.2"],
+    },
+  },
+  {
+    id: "HRS-07",
+    name: "Remote working security",
+    domain: "Human Resources",
+    description:
+      "Security requirements for remote and hybrid work (device posture, network, physical privacy) are defined and enforced.",
+    evidence: ["Remote work policy", "VPN/ZTNA configuration", "Device posture compliance report"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.6.7", "A.7.9"],
+      soc2: ["CC6.6", "CC6.7"],
+      csf2: ["PR.IR-01"],
+      nist80053: ["AC-17"],
+      pci4: ["1.5"],
+    },
+  },
+
+  // ───────────── Access Control ─────────────
+  {
+    id: "IAM-01",
+    name: "Access control policy and least privilege",
+    domain: "Access Control",
+    description:
+      "Access is granted on need-to-know and least-privilege principles via role-based access control, defined in an access control policy.",
+    evidence: ["Access control policy", "RBAC role definitions", "Access matrix"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.15", "A.8.3"],
+      soc2: ["CC6.1", "CC6.3"],
+      csf2: ["PR.AA-05"],
+      nist80053: ["AC-1", "AC-3", "AC-6"],
+      hipaa: ["164.312(a)(1)", "164.308(a)(4)(ii)(B)"],
+      pci4: ["7.2", "7.3"],
+      cisv8: ["3.3", "6.8"],
+      gdpr: ["Art. 32"],
+    },
+  },
+  {
+    id: "IAM-02",
+    name: "User provisioning and unique identities",
+    domain: "Access Control",
+    description:
+      "Each user has a unique ID; access requests are approved by the asset owner before provisioning, through a centralized identity provider.",
+    evidence: ["Access request & approval tickets", "IdP user export", "Account inventory"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.5.16", "A.5.18"],
+      soc2: ["CC6.2"],
+      csf2: ["PR.AA-01", "PR.AA-02"],
+      nist80053: ["AC-2", "IA-4", "IA-8", "IA-12"],
+      hipaa: ["164.312(a)(2)(i)", "164.308(a)(4)(ii)(C)"],
+      pci4: ["8.2"],
+      cisv8: ["5.1", "6.1"],
+    },
+  },
+  {
+    id: "IAM-03",
+    name: "Periodic user access reviews",
+    domain: "Access Control",
+    description:
+      "User and privileged access is reviewed by owners at least quarterly; inappropriate or dormant access is removed.",
+    evidence: ["Quarterly access review sign-offs", "Removed access tickets", "Dormant account report"],
+    automatable: true,
+    frequency: "Quarterly",
+    map: {
+      iso27001: ["A.5.18", "A.8.2"],
+      soc2: ["CC6.2", "CC6.3"],
+      csf2: ["PR.AA-05"],
+      nist80053: ["AC-2", "AC-6"],
+      hipaa: ["164.308(a)(4)(ii)(C)"],
+      pci4: ["7.2", "8.2"],
+      cisv8: ["5.3"],
+    },
+  },
+  {
+    id: "IAM-04",
+    name: "Multi-factor authentication",
+    domain: "Access Control",
+    description:
+      "MFA is enforced for all workforce access to corporate systems, remote access, cloud consoles and administrative access.",
+    evidence: ["IdP MFA enforcement policy", "MFA enrollment report", "Cloud console MFA status"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.5"],
+      soc2: ["CC6.1"],
+      csf2: ["PR.AA-03"],
+      nist80053: ["IA-2"],
+      hipaa: ["164.312(d)"],
+      pci4: ["8.4"],
+      cisv8: ["6.3", "6.5"],
+    },
+  },
+  {
+    id: "IAM-05",
+    name: "Password and authenticator management",
+    domain: "Access Control",
+    description:
+      "Authentication secrets meet strength requirements, are stored hashed, protected in vaults, never shared, and lockout applies after repeated failures.",
+    evidence: ["Password policy configuration", "Secrets vault configuration", "Lockout settings"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.5.17", "A.8.5"],
+      soc2: ["CC6.1"],
+      csf2: ["PR.AA-01", "PR.AA-03"],
+      nist80053: ["IA-5", "AC-7"],
+      hipaa: ["164.308(a)(5)(ii)(D)"],
+      pci4: ["8.3"],
+      cisv8: ["5.2"],
+    },
+  },
+  {
+    id: "IAM-06",
+    name: "Privileged access management",
+    domain: "Access Control",
+    description:
+      "Privileged accounts are separate from daily accounts, restricted, approved, logged and time-bound; privileged utilities are controlled.",
+    evidence: ["Admin account inventory", "PAM / JIT access logs", "Break-glass procedure"],
+    automatable: true,
+    frequency: "Quarterly",
+    map: {
+      iso27001: ["A.8.2", "A.8.18"],
+      soc2: ["CC6.1", "CC6.3"],
+      csf2: ["PR.AA-05"],
+      nist80053: ["AC-6", "AC-2"],
+      hipaa: ["164.312(a)(2)(ii)"],
+      pci4: ["7.2", "8.6"],
+      cisv8: ["5.4", "6.5"],
+    },
+  },
+  {
+    id: "IAM-07",
+    name: "Session management and device lock",
+    domain: "Access Control",
+    description:
+      "Sessions time out and devices lock automatically after a period of inactivity; SSO assertions are protected.",
+    evidence: ["MDM screen-lock policy", "Application session timeout configuration"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.5", "A.7.7"],
+      soc2: ["CC6.1"],
+      csf2: ["PR.AA-04"],
+      nist80053: ["AC-11"],
+      hipaa: ["164.312(a)(2)(iii)"],
+      pci4: ["8.2"],
+      cisv8: ["4.3"],
+    },
+  },
+  {
+    id: "IAM-08",
+    name: "Source code access control",
+    domain: "Access Control",
+    description:
+      "Access to source code repositories and development tools is restricted, reviewed and protected with branch protection.",
+    evidence: ["Repository permission export", "Branch protection settings"],
+    automatable: true,
+    frequency: "Quarterly",
+    map: {
+      iso27001: ["A.8.4"],
+      soc2: ["CC6.1", "CC8.1"],
+      csf2: ["PR.AA-05", "PR.PS-06"],
+      nist80053: ["AC-3", "SA-15"],
+      pci4: ["6.2"],
+    },
+  },
+
+  // ───────────── Cryptography ─────────────
+  {
+    id: "CRY-01",
+    name: "Encryption of data at rest",
+    domain: "Cryptography",
+    description:
+      "Sensitive data in databases, storage, backups and endpoints is encrypted at rest using strong, approved algorithms (e.g. AES-256).",
+    evidence: ["Storage/DB encryption configuration", "Disk encryption report (MDM)"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.24"],
+      soc2: ["CC6.1", "CC6.7"],
+      csf2: ["PR.DS-01"],
+      nist80053: ["SC-28", "SC-13"],
+      hipaa: ["164.312(a)(2)(iv)"],
+      pci4: ["3.5"],
+      gdpr: ["Art. 32"],
+      cisv8: ["3.6", "3.11"],
+      dpdp: ["Sec. 8(5)"],
+    },
+  },
+  {
+    id: "CRY-02",
+    name: "Encryption of data in transit",
+    domain: "Cryptography",
+    description:
+      "Data transmitted over public or untrusted networks uses TLS 1.2+ or equivalent; insecure protocols are disabled.",
+    evidence: ["TLS configuration scan", "Load balancer / CDN TLS policy"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.24", "A.5.14"],
+      soc2: ["CC6.7"],
+      csf2: ["PR.DS-02"],
+      nist80053: ["SC-8", "SC-13"],
+      hipaa: ["164.312(e)(1)"],
+      pci4: ["4.2"],
+      gdpr: ["Art. 32"],
+      cisv8: ["3.10"],
+      dpdp: ["Sec. 8(5)"],
+    },
+  },
+  {
+    id: "CRY-03",
+    name: "Cryptographic key management",
+    domain: "Cryptography",
+    description:
+      "Cryptographic keys are generated, stored (KMS/HSM), rotated, and revoked under a documented key management procedure with restricted access.",
+    evidence: ["KMS key policies", "Key rotation configuration", "Key management procedure"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.8.24"],
+      soc2: ["CC6.1"],
+      csf2: ["PR.DS-01"],
+      nist80053: ["SC-12"],
+      pci4: ["3.6", "3.7"],
+    },
+  },
+  {
+    id: "CRY-04",
+    name: "Data masking and minimization of sensitive displays",
+    domain: "Cryptography",
+    description:
+      "Sensitive data (e.g. PAN, national IDs) is masked, tokenized or pseudonymized where full values are not required.",
+    evidence: ["Masking/tokenization configuration", "Screenshots of masked fields"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.8.11"],
+      soc2: ["C1.1"],
+      csf2: ["PR.DS-10"],
+      nist80053: ["SC-28"],
+      pci4: ["3.4"],
+      gdpr: ["Art. 25", "Art. 32"],
+    },
+  },
+
+  // ───────────── Physical Security ─────────────
+  {
+    id: "PHY-01",
+    name: "Physical access control to facilities",
+    domain: "Physical Security",
+    description:
+      "Physical perimeters and entry points are secured with badge access; access is authorized, reviewed and visitor access is logged and escorted.",
+    evidence: ["Badge access lists and reviews", "Visitor logs", "Data center provider SOC 2 report"],
+    automatable: false,
+    frequency: "Quarterly",
+    map: {
+      iso27001: ["A.7.1", "A.7.2", "A.7.3", "A.7.6"],
+      soc2: ["CC6.4"],
+      csf2: ["PR.AA-06"],
+      nist80053: ["PE-2", "PE-3"],
+      hipaa: ["164.310(a)(1)", "164.310(a)(2)(iii)"],
+      pci4: ["9.2", "9.3"],
+    },
+  },
+  {
+    id: "PHY-02",
+    name: "Physical security monitoring",
+    domain: "Physical Security",
+    description: "Premises are monitored by CCTV, alarms and/or guards; monitoring records are retained.",
+    evidence: ["CCTV coverage map", "Alarm monitoring contract"],
+    automatable: false,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.7.4"],
+      soc2: ["CC6.4"],
+      csf2: ["DE.CM-02"],
+      nist80053: ["PE-6"],
+      pci4: ["9.2"],
+    },
+  },
+  {
+    id: "PHY-03",
+    name: "Environmental protections and supporting utilities",
+    domain: "Physical Security",
+    description:
+      "Facilities hosting systems are protected against fire, flood, power loss and temperature; utilities and cabling are protected and maintained.",
+    evidence: ["Data center certifications", "UPS/generator maintenance records", "Fire suppression inspection"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.7.5", "A.7.8", "A.7.11", "A.7.12", "A.7.13"],
+      soc2: ["A1.2"],
+      csf2: ["PR.IR-02"],
+      nist80053: ["PE-9", "PE-13", "PE-14", "MA-2"],
+      hipaa: ["164.310(a)(1)"],
+    },
+  },
+  {
+    id: "PHY-04",
+    name: "Endpoint security and clear desk/screen",
+    domain: "Physical Security",
+    description:
+      "Endpoints are managed via MDM with encryption, screen-lock and remote wipe; clear desk and clear screen rules apply.",
+    evidence: ["MDM compliance report", "Clear desk policy", "Remote wipe capability"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.1", "A.7.7", "A.7.9"],
+      soc2: ["CC6.1", "CC6.8"],
+      csf2: ["PR.PS-01", "PR.AA-05"],
+      nist80053: ["AC-19", "AC-11"],
+      hipaa: ["164.310(b)", "164.310(c)"],
+      pci4: ["1.5", "9.5"],
+      cisv8: ["3.6", "4.3"],
+    },
+  },
+
+  // ───────────── Operations ─────────────
+  {
+    id: "OPS-01",
+    name: "Secure configuration baselines",
+    domain: "Operations",
+    description:
+      "Hardened configuration baselines (e.g. CIS Benchmarks) are defined for systems and enforced through infrastructure-as-code; drift is detected.",
+    evidence: ["Hardening standards", "IaC repository", "Configuration drift / CSPM report"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.9"],
+      soc2: ["CC7.1", "CC5.2"],
+      csf2: ["PR.PS-01"],
+      nist80053: ["CM-2", "CM-6", "CM-7"],
+      pci4: ["2.2"],
+      cisv8: ["4.1"],
+    },
+  },
+  {
+    id: "OPS-02",
+    name: "Malware and endpoint threat protection",
+    domain: "Operations",
+    description:
+      "Anti-malware/EDR is deployed on all applicable systems, kept updated, centrally monitored and cannot be disabled by users.",
+    evidence: ["EDR deployment coverage report", "Signature/agent update status", "EDR alert samples"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.7"],
+      soc2: ["CC6.8"],
+      csf2: ["DE.CM-09", "PR.PS-05"],
+      nist80053: ["SI-3"],
+      hipaa: ["164.308(a)(5)(ii)(B)"],
+      pci4: ["5.2", "5.3"],
+      cisv8: ["10.1"],
+    },
+  },
+  {
+    id: "OPS-03",
+    name: "Software installation restrictions",
+    domain: "Operations",
+    description:
+      "Installation of software on production and end-user systems is restricted to authorized personnel and approved software.",
+    evidence: ["Application allow-listing config", "Local admin removal report"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.19"],
+      soc2: ["CC6.8", "CC8.1"],
+      csf2: ["PR.PS-05"],
+      nist80053: ["CM-11", "CM-7"],
+      cisv8: ["2.3"],
+    },
+  },
+  {
+    id: "OPS-04",
+    name: "Capacity management",
+    domain: "Operations",
+    description:
+      "Resource usage is monitored and capacity is planned and auto-scaled to meet availability commitments.",
+    evidence: ["Capacity dashboards", "Auto-scaling policies", "Capacity planning review"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.6"],
+      soc2: ["A1.1"],
+      csf2: ["PR.IR-04"],
+      nist80053: ["SC-5"],
+    },
+  },
+  {
+    id: "OPS-05",
+    name: "Data retention and deletion",
+    domain: "Operations",
+    description:
+      "Retention periods are defined per data type; data is securely deleted when no longer required, including on customer request.",
+    evidence: ["Retention schedule", "Automated deletion jobs", "Deletion request log"],
+    automatable: true,
+    frequency: "Quarterly",
+    map: {
+      iso27001: ["A.8.10", "A.5.33"],
+      soc2: ["C1.2", "P4.2", "P4.3"],
+      csf2: ["ID.AM-08"],
+      nist80053: ["SI-12", "MP-6"],
+      hipaa: ["164.316(b)(2)(i)"],
+      pci4: ["3.2"],
+      gdpr: ["Art. 5", "Art. 17"],
+      cisv8: ["3.4", "3.5"],
+      dpdp: ["Sec. 8(7)"],
+    },
+  },
+  {
+    id: "OPS-06",
+    name: "Data loss prevention",
+    domain: "Operations",
+    description:
+      "Data leakage prevention measures (DLP, egress controls, sharing restrictions) are applied to systems and networks handling sensitive data.",
+    evidence: ["DLP policy configuration", "External sharing settings", "DLP incident log"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.12", "A.5.14"],
+      soc2: ["CC6.7"],
+      csf2: ["PR.DS-01", "PR.DS-02"],
+      nist80053: ["AC-4"],
+      pci4: ["1.3"],
+    },
+  },
+  {
+    id: "OPS-07",
+    name: "Processing integrity checks",
+    domain: "Operations",
+    description:
+      "Inputs, processing and outputs are validated for completeness and accuracy; processing errors are detected and corrected.",
+    evidence: ["Input validation specifications", "Reconciliation reports", "Job failure alerts"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.26"],
+      soc2: ["PI1.1", "PI1.2", "PI1.3", "PI1.4", "PI1.5"],
+      csf2: ["PR.DS-10"],
+      hipaa: ["164.312(c)(1)"],
+    },
+  },
+
+  // ───────────── Network Security ─────────────
+  {
+    id: "NET-01",
+    name: "Network security controls and firewalls",
+    domain: "Network Security",
+    description:
+      "Firewalls/security groups restrict inbound and outbound traffic to what is required; rules are documented and reviewed at least semi-annually.",
+    evidence: ["Security group / firewall rule export", "Rule review records", "Network diagram"],
+    automatable: true,
+    frequency: "Quarterly",
+    map: {
+      iso27001: ["A.8.20", "A.8.21"],
+      soc2: ["CC6.6"],
+      csf2: ["PR.IR-01"],
+      nist80053: ["SC-7"],
+      pci4: ["1.2", "1.3", "1.4"],
+      cisv8: ["4.4", "12.2"],
+    },
+  },
+  {
+    id: "NET-02",
+    name: "Network segmentation",
+    domain: "Network Security",
+    description:
+      "Networks are segmented by trust level and function (e.g. production, corporate, CDE), with controlled interfaces between segments.",
+    evidence: ["Segmentation architecture", "VPC/subnet design", "Segmentation test results"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.8.22"],
+      soc2: ["CC6.6", "CC6.1"],
+      csf2: ["PR.IR-01", "ID.AM-03"],
+      nist80053: ["SC-7", "AC-4"],
+      pci4: ["1.3", "1.4", "12.5"],
+      cisv8: ["12.2"],
+    },
+  },
+  {
+    id: "NET-03",
+    name: "Web filtering and DNS protection",
+    domain: "Network Security",
+    description: "Access to malicious or unauthorized websites is blocked through DNS filtering or secure web gateways.",
+    evidence: ["DNS filtering configuration", "Blocked category policy"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.23"],
+      soc2: ["CC6.8"],
+      csf2: ["PR.IR-01"],
+      nist80053: ["SC-7"],
+      pci4: ["5.4"],
+      cisv8: ["9.2"],
+    },
+  },
+  {
+    id: "NET-04",
+    name: "Edge protection, WAF and DDoS mitigation",
+    domain: "Network Security",
+    description:
+      "Public-facing applications are protected by a WAF and DDoS mitigation; intrusions are detected at the network boundary.",
+    evidence: ["WAF ruleset configuration", "DDoS protection configuration", "IDS/IPS alerts"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.20", "A.8.16"],
+      soc2: ["CC6.6", "CC7.2"],
+      csf2: ["PR.IR-01", "DE.CM-01"],
+      nist80053: ["SC-5", "SC-7", "SI-4"],
+      pci4: ["6.4", "11.5"],
+      cisv8: ["13.3"],
+    },
+  },
+
+  // ───────────── Logging & Monitoring ─────────────
+  {
+    id: "LOG-01",
+    name: "Centralized security logging",
+    domain: "Logging & Monitoring",
+    description:
+      "Security-relevant events (auth, admin actions, data access) are logged with sufficient detail and centralized in a SIEM or log platform.",
+    evidence: ["Logging standard", "SIEM source coverage", "Sample log records"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.15"],
+      soc2: ["CC7.2"],
+      csf2: ["PR.PS-04"],
+      nist80053: ["AU-2", "AU-3", "AU-12"],
+      hipaa: ["164.312(b)"],
+      pci4: ["10.2"],
+      cisv8: ["8.1", "8.2"],
+    },
+  },
+  {
+    id: "LOG-02",
+    name: "Log protection and retention",
+    domain: "Logging & Monitoring",
+    description:
+      "Logs are protected from tampering, access-restricted and retained for at least 12 months (or as required).",
+    evidence: ["Immutable storage / object lock settings", "Log retention configuration", "Log access permissions"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.15"],
+      soc2: ["CC7.2"],
+      csf2: ["PR.PS-04", "RS.AN-07"],
+      nist80053: ["AU-9", "AU-11"],
+      pci4: ["10.3", "10.5"],
+      cisv8: ["8.10"],
+    },
+  },
+  {
+    id: "LOG-03",
+    name: "Security monitoring and alerting",
+    domain: "Logging & Monitoring",
+    description:
+      "Logs and systems are monitored for anomalous behavior with automated alerting; alerts are triaged by responsible staff.",
+    evidence: ["SIEM detection rules", "Alert triage records", "On-call schedule"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.16"],
+      soc2: ["CC7.2", "CC7.3"],
+      csf2: ["DE.CM-01", "DE.CM-03", "DE.CM-09", "DE.AE-02", "DE.AE-03", "DE.AE-06"],
+      nist80053: ["SI-4", "AU-6", "CA-7"],
+      hipaa: ["164.308(a)(1)(ii)(D)", "164.308(a)(5)(ii)(C)"],
+      pci4: ["10.4", "10.7", "11.5"],
+      cisv8: ["8.11", "13.1"],
+    },
+  },
+  {
+    id: "LOG-04",
+    name: "Clock synchronization",
+    domain: "Logging & Monitoring",
+    description: "System clocks are synchronized to authoritative time sources to ensure accurate event correlation.",
+    evidence: ["NTP configuration", "Cloud time sync settings"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.17"],
+      soc2: ["CC7.2"],
+      csf2: ["DE.AE-03"],
+      nist80053: ["AU-8"],
+      pci4: ["10.6"],
+      cisv8: ["8.4"],
+    },
+  },
+
+  // ───────────── Vulnerability Management ─────────────
+  {
+    id: "VUL-01",
+    name: "Vulnerability scanning and remediation SLAs",
+    domain: "Vulnerability Management",
+    description:
+      "Infrastructure, containers and dependencies are scanned at least monthly; findings are remediated within risk-based SLAs (e.g. critical ≤ 15 days).",
+    evidence: ["Scanner reports", "Remediation SLA tracking", "Dependency scanning results"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.8"],
+      soc2: ["CC7.1"],
+      csf2: ["ID.RA-01", "PR.PS-02"],
+      nist80053: ["RA-5", "SI-2"],
+      pci4: ["6.3", "11.3"],
+      cisv8: ["7.1", "7.5"],
+      gdpr: ["Art. 32"],
+    },
+  },
+  {
+    id: "VUL-02",
+    name: "Patch management",
+    domain: "Vulnerability Management",
+    description:
+      "Operating systems and applications are patched through an automated process; end-of-life software is replaced.",
+    evidence: ["Patch compliance report", "EOL software register"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.8", "A.8.19"],
+      soc2: ["CC7.1", "CC8.1"],
+      csf2: ["PR.PS-02", "PR.PS-03"],
+      nist80053: ["SI-2"],
+      pci4: ["6.3"],
+      cisv8: ["7.3"],
+    },
+  },
+  {
+    id: "VUL-03",
+    name: "Penetration testing",
+    domain: "Vulnerability Management",
+    description:
+      "Independent external and internal penetration tests are performed at least annually and after significant changes; findings are remediated and retested.",
+    evidence: ["Penetration test report", "Remediation and retest evidence"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.8.8", "A.8.29", "A.5.35"],
+      soc2: ["CC4.1", "CC7.1"],
+      csf2: ["ID.RA-01", "ID.IM-02"],
+      nist80053: ["CA-8"],
+      pci4: ["11.4"],
+      cisv8: ["18.1", "18.2"],
+    },
+  },
+  {
+    id: "VUL-04",
+    name: "Vulnerability disclosure program",
+    domain: "Vulnerability Management",
+    description:
+      "A public channel (security.txt, VDP or bug bounty) allows researchers to report vulnerabilities, which are triaged and addressed.",
+    evidence: ["security.txt / VDP page", "Researcher report tickets"],
+    automatable: false,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.8.8"],
+      soc2: ["CC2.3", "CC7.1"],
+      csf2: ["ID.RA-08"],
+      nist80053: ["RA-5"],
+      cisv8: ["16.2"],
+    },
+  },
+
+  // ───────────── Secure Development ─────────────
+  {
+    id: "SDL-01",
+    name: "Secure software development lifecycle",
+    domain: "Secure Development",
+    description:
+      "A secure SDLC defines security requirements, threat modeling, secure architecture principles and security gates for all software projects.",
+    evidence: ["SDLC policy", "Threat models", "Security requirements in tickets"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.8.25", "A.8.26", "A.8.27", "A.5.8"],
+      soc2: ["CC8.1", "CC5.2"],
+      csf2: ["PR.PS-06"],
+      nist80053: ["SA-3", "SA-8", "PL-8", "SA-15"],
+      pci4: ["6.2"],
+      gdpr: ["Art. 25"],
+      cisv8: ["16.1"],
+    },
+  },
+  {
+    id: "SDL-02",
+    name: "Secure coding and code review",
+    domain: "Secure Development",
+    description:
+      "Code follows secure coding standards (e.g. OWASP); every change is peer-reviewed and scanned with SAST/SCA/secret scanning before merge.",
+    evidence: ["Pull request review history", "SAST/SCA pipeline results", "Secure coding standard"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.28", "A.8.29"],
+      soc2: ["CC8.1"],
+      csf2: ["PR.PS-06"],
+      nist80053: ["SA-11", "SA-15"],
+      pci4: ["6.2", "6.3"],
+      cisv8: ["16.12"],
+    },
+  },
+  {
+    id: "SDL-03",
+    name: "Change management",
+    domain: "Secure Development",
+    description:
+      "Changes to production are documented, risk-assessed, tested, approved and deployed through CI/CD with rollback; emergency changes are reviewed retroactively.",
+    evidence: ["Change tickets with approvals", "CI/CD deployment logs", "Emergency change reviews"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.32"],
+      soc2: ["CC8.1", "CC3.4"],
+      csf2: ["PR.PS-01", "ID.RA-07"],
+      nist80053: ["CM-3", "CM-4"],
+      pci4: ["6.5"],
+      cisv8: ["4.1"],
+    },
+  },
+  {
+    id: "SDL-04",
+    name: "Environment separation and test data protection",
+    domain: "Secure Development",
+    description:
+      "Development, test and production environments are separated; production data is not used in testing unless sanitized and approved.",
+    evidence: ["Environment architecture", "Test data masking procedure", "Access lists per environment"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.8.31", "A.8.33", "A.8.34"],
+      soc2: ["CC8.1"],
+      csf2: ["PR.IR-01"],
+      nist80053: ["CM-2", "SA-11"],
+      pci4: ["6.5"],
+    },
+  },
+  {
+    id: "SDL-05",
+    name: "Outsourced development oversight",
+    domain: "Secure Development",
+    description:
+      "Outsourced development is governed by contractual security requirements and its deliverables are reviewed and tested.",
+    evidence: ["Development contracts with security clauses", "Code review of vendor deliverables"],
+    automatable: false,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.8.30"],
+      soc2: ["CC9.2", "CC8.1"],
+      csf2: ["GV.SC-05"],
+      nist80053: ["SA-4", "SA-11"],
+      pci4: ["6.2"],
+    },
+  },
+
+  // ───────────── Vendor Management ─────────────
+  {
+    id: "VEN-01",
+    name: "Vendor inventory and risk tiering",
+    domain: "Vendor Management",
+    description:
+      "All third-party service providers are inventoried with data access and criticality; a vendor management policy defines tiers and requirements.",
+    evidence: ["Vendor inventory", "Vendor management policy", "Vendor tiering"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.19", "A.5.21"],
+      soc2: ["CC9.2"],
+      csf2: ["GV.SC-01", "GV.SC-02", "GV.SC-04", "ID.AM-04"],
+      nist80053: ["SR-2", "SA-9"],
+      pci4: ["12.8"],
+      cisv8: ["15.1", "15.2"],
+    },
+  },
+  {
+    id: "VEN-02",
+    name: "Vendor due diligence and security reviews",
+    domain: "Vendor Management",
+    description:
+      "Vendors are assessed before onboarding and periodically (SOC 2/ISO reports, questionnaires), based on risk tier; findings are tracked.",
+    evidence: ["Vendor security assessments", "Collected SOC 2 / ISO certificates", "Annual vendor review"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.19", "A.5.22", "A.5.23"],
+      soc2: ["CC9.2"],
+      csf2: ["GV.SC-06", "GV.SC-07", "ID.RA-10", "DE.CM-06"],
+      nist80053: ["SR-6", "SA-9"],
+      hipaa: ["164.308(b)(1)"],
+      pci4: ["12.8"],
+      gdpr: ["Art. 28"],
+      dpdp: ["Sec. 8(2)"],
+    },
+  },
+  {
+    id: "VEN-03",
+    name: "Vendor contracts, DPAs and BAAs",
+    domain: "Vendor Management",
+    description:
+      "Supplier agreements include security, confidentiality, breach notification and audit rights; DPAs/BAAs are executed where personal data or PHI is processed.",
+    evidence: ["Executed contracts with security clauses", "Data processing agreements", "Business associate agreements"],
+    automatable: false,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.5.20", "A.5.21"],
+      soc2: ["CC9.2", "P6.4"],
+      csf2: ["GV.SC-05", "GV.SC-08"],
+      nist80053: ["SA-4", "SR-3", "PS-7"],
+      hipaa: ["164.308(b)(1)", "164.410"],
+      pci4: ["12.8"],
+      gdpr: ["Art. 28"],
+      cisv8: ["15.4"],
+      dpdp: ["Sec. 8(2)"],
+    },
+  },
+  {
+    id: "VEN-04",
+    name: "Vendor offboarding",
+    domain: "Vendor Management",
+    description:
+      "When a vendor relationship ends, access is revoked, data is returned or destroyed and confirmation is obtained.",
+    evidence: ["Vendor termination checklist", "Data destruction confirmation"],
+    automatable: false,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.5.22"],
+      soc2: ["CC9.2"],
+      csf2: ["GV.SC-10"],
+      nist80053: ["SA-9"],
+      cisv8: ["15.7"],
+    },
+  },
+
+  // ───────────── Incident Response ─────────────
+  {
+    id: "INC-01",
+    name: "Incident response plan",
+    domain: "Incident Response",
+    description:
+      "A documented incident response plan defines roles, severity levels, escalation, communication and regulatory notification timelines; it is reviewed annually.",
+    evidence: ["Incident response plan", "Escalation matrix", "Annual plan review"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.24"],
+      soc2: ["CC7.3", "CC7.4"],
+      csf2: ["ID.IM-04", "RS.MA-01"],
+      nist80053: ["IR-8", "IR-4"],
+      hipaa: ["164.308(a)(6)(ii)"],
+      pci4: ["12.10"],
+      cisv8: ["17.1", "17.4"],
+    },
+  },
+  {
+    id: "INC-02",
+    name: "Incident reporting, triage and handling",
+    domain: "Incident Response",
+    description:
+      "Personnel report security events through defined channels; events are triaged, categorized, contained, eradicated and tracked in an incident register.",
+    evidence: ["Incident tickets / register", "Reporting channel (e.g. #security, email)", "Triage records"],
+    automatable: true,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.6.8", "A.5.25", "A.5.26"],
+      soc2: ["CC7.3", "CC7.4"],
+      csf2: ["DE.AE-04", "DE.AE-08", "RS.MA-02", "RS.MA-03", "RS.MA-04", "RS.MI-01", "RS.MI-02"],
+      nist80053: ["IR-4", "IR-5", "IR-6"],
+      hipaa: ["164.308(a)(6)(ii)"],
+      pci4: ["12.10"],
+      cisv8: ["17.2", "17.4"],
+    },
+  },
+  {
+    id: "INC-03",
+    name: "Forensic evidence collection",
+    domain: "Incident Response",
+    description:
+      "Evidence related to incidents is collected and preserved with chain of custody to support investigation and legal action.",
+    evidence: ["Forensics procedure", "Chain of custody forms"],
+    automatable: false,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.5.28"],
+      soc2: ["CC7.4"],
+      csf2: ["RS.AN-06", "RS.AN-07"],
+      nist80053: ["IR-4", "AU-9"],
+      pci4: ["10.2"],
+    },
+  },
+  {
+    id: "INC-04",
+    name: "Breach notification",
+    domain: "Incident Response",
+    description:
+      "Personal data breaches are notified to regulators, customers and affected individuals within statutory timelines (e.g. GDPR 72h, CERT-In 6h, HIPAA 60 days).",
+    evidence: ["Breach notification procedure", "Regulator notification templates", "Breach register"],
+    automatable: false,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.5.26", "A.5.5"],
+      soc2: ["CC7.4", "P6.3", "P6.6", "CC2.3"],
+      csf2: ["RS.CO-02", "RS.CO-03"],
+      nist80053: ["IR-6"],
+      hipaa: ["164.404", "164.408", "164.410"],
+      pci4: ["12.10"],
+      gdpr: ["Art. 33", "Art. 34"],
+      dpdp: ["Sec. 8(6)"],
+    },
+  },
+  {
+    id: "INC-05",
+    name: "Post-incident review and IR testing",
+    domain: "Incident Response",
+    description:
+      "Root-cause analysis and lessons learned are documented after incidents; IR tabletop exercises are run at least annually.",
+    evidence: ["Post-mortem reports", "Tabletop exercise reports"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.27"],
+      soc2: ["CC7.5", "CC4.2"],
+      csf2: ["RS.AN-03", "ID.IM-02", "ID.IM-03"],
+      nist80053: ["IR-3", "IR-4"],
+      pci4: ["12.10"],
+      cisv8: ["17.7", "17.8"],
+    },
+  },
+
+  // ───────────── Business Continuity ─────────────
+  {
+    id: "BCM-01",
+    name: "Business continuity and disaster recovery plan",
+    domain: "Business Continuity",
+    description:
+      "BC/DR plans with RTO/RPO, based on a business impact analysis, maintain security during disruption and define emergency mode operations.",
+    evidence: ["Business impact analysis", "BC/DR plan", "RTO/RPO definitions"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.29", "A.5.30"],
+      soc2: ["CC9.1", "A1.2", "CC7.5"],
+      csf2: ["ID.IM-04", "RC.RP-01", "RC.RP-02", "GV.OC-04"],
+      nist80053: ["CP-2"],
+      hipaa: ["164.308(a)(7)(ii)(B)", "164.308(a)(7)(ii)(C)", "164.308(a)(7)(ii)(E)"],
+      pci4: ["12.10"],
+    },
+  },
+  {
+    id: "BCM-02",
+    name: "Backups",
+    domain: "Business Continuity",
+    description:
+      "Critical data and systems are backed up automatically, encrypted, stored in a separate location and protected from modification (immutable).",
+    evidence: ["Backup configuration", "Backup job success reports", "Cross-region / immutable storage settings"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.13"],
+      soc2: ["A1.2", "CC7.5"],
+      csf2: ["PR.DS-11"],
+      nist80053: ["CP-9", "CP-6"],
+      hipaa: ["164.308(a)(7)(ii)(A)"],
+      cisv8: ["11.1", "11.2", "11.3"],
+      gdpr: ["Art. 32"],
+    },
+  },
+  {
+    id: "BCM-03",
+    name: "Backup restoration and DR testing",
+    domain: "Business Continuity",
+    description:
+      "Backup restores and DR failover are tested at least annually; backup integrity is verified before restoration and results are documented.",
+    evidence: ["Restore test results", "DR test report", "Lessons learned"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.30", "A.8.13"],
+      soc2: ["A1.3"],
+      csf2: ["PR.DS-11", "RC.RP-03", "RC.RP-05", "RC.RP-06", "ID.IM-02"],
+      nist80053: ["CP-4", "CP-10"],
+      hipaa: ["164.308(a)(7)(ii)(D)"],
+      cisv8: ["11.5"],
+    },
+  },
+  {
+    id: "BCM-04",
+    name: "Infrastructure redundancy and high availability",
+    domain: "Business Continuity",
+    description:
+      "Production infrastructure is deployed with redundancy (multi-AZ/region) to meet availability commitments.",
+    evidence: ["Multi-AZ architecture", "Uptime/SLA reports", "Failover configuration"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.14"],
+      soc2: ["A1.1", "A1.2"],
+      csf2: ["PR.IR-03"],
+      nist80053: ["CP-7"],
+    },
+  },
+  {
+    id: "BCM-05",
+    name: "Incident and recovery communications",
+    domain: "Business Continuity",
+    description:
+      "Status pages and stakeholder communication plans keep customers and the public informed during incident recovery.",
+    evidence: ["Status page history", "Customer communication templates"],
+    automatable: true,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["7.4", "A.5.29"],
+      soc2: ["CC2.3", "CC7.5"],
+      csf2: ["RC.CO-03", "RC.CO-04", "RS.MA-05"],
+      nist80053: ["CP-2"],
+    },
+  },
+
+  // ───────────── Privacy ─────────────
+  {
+    id: "PRV-01",
+    name: "Privacy notice and transparency",
+    domain: "Privacy",
+    description:
+      "A clear privacy notice describes what personal data is collected, purposes, legal basis, retention, sharing and rights, in plain language.",
+    evidence: ["Published privacy notice", "Notice version history"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.34"],
+      soc2: ["P1.1"],
+      csf2: ["GV.OC-03"],
+      nist80053: ["PT-5"],
+      gdpr: ["Art. 12", "Art. 13"],
+      dpdp: ["Sec. 5"],
+    },
+  },
+  {
+    id: "PRV-02",
+    name: "Lawful basis and consent management",
+    domain: "Privacy",
+    description:
+      "A lawful basis is recorded for each processing purpose; where consent is relied on it is freely given, specific, recorded and withdrawable.",
+    evidence: ["Lawful basis register", "Consent records", "Consent withdrawal flow"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.5.34", "A.5.31"],
+      soc2: ["P2.1", "P3.1", "P4.1", "P6.1"],
+      csf2: ["GV.OC-03"],
+      nist80053: ["PT-2", "PT-3", "PT-4"],
+      gdpr: ["Art. 6", "Art. 7", "Art. 9", "Art. 5"],
+      dpdp: ["Sec. 4", "Sec. 6", "Sec. 7", "Sec. 9"],
+    },
+  },
+  {
+    id: "PRV-03",
+    name: "Data subject / data principal rights requests",
+    domain: "Privacy",
+    description:
+      "Requests for access, correction, erasure, portability and objection are received, verified and fulfilled within statutory timelines and logged.",
+    evidence: ["DSAR procedure", "DSAR request log with response times"],
+    automatable: true,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.5.34"],
+      soc2: ["P5.1", "P5.2", "P7.1"],
+      csf2: ["GV.OC-03"],
+      nist80053: ["PT-3"],
+      gdpr: ["Art. 12", "Art. 15", "Art. 16", "Art. 17", "Art. 20", "Art. 21"],
+      dpdp: ["Sec. 11", "Sec. 12"],
+    },
+  },
+  {
+    id: "PRV-04",
+    name: "Privacy by design and impact assessments",
+    domain: "Privacy",
+    description:
+      "Privacy is built into new systems and changes; DPIAs are performed for high-risk processing and data minimization is applied by default.",
+    evidence: ["DPIA records", "Privacy review in SDLC", "Data minimization decisions"],
+    automatable: false,
+    frequency: "Event-driven",
+    map: {
+      iso27001: ["A.5.34", "A.8.26"],
+      soc2: ["P3.1"],
+      csf2: ["ID.RA-04"],
+      nist80053: ["RA-3", "SA-8"],
+      gdpr: ["Art. 25", "Art. 35", "Art. 5"],
+      dpdp: ["Sec. 10", "Sec. 8(4)"],
+    },
+  },
+  {
+    id: "PRV-05",
+    name: "Data protection officer and privacy grievances",
+    domain: "Privacy",
+    description:
+      "A DPO or privacy contact is designated and published; privacy inquiries and complaints are handled through a grievance mechanism.",
+    evidence: ["DPO appointment", "Published contact details", "Grievance log"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.34", "A.5.2"],
+      soc2: ["P8.1"],
+      csf2: ["GV.RR-02"],
+      gdpr: ["Art. 37"],
+      dpdp: ["Sec. 8(10)", "Sec. 13", "Sec. 10"],
+    },
+  },
+  {
+    id: "PRV-06",
+    name: "Cross-border data transfers",
+    domain: "Privacy",
+    description:
+      "International transfers of personal data rely on adequacy decisions, SCCs or other permitted mechanisms and respect restricted jurisdictions.",
+    evidence: ["Transfer impact assessments", "Executed SCCs", "Data residency map"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.14", "A.5.34"],
+      soc2: ["P6.1"],
+      csf2: ["GV.OC-03"],
+      nist80053: ["CM-12"],
+      gdpr: ["Art. 44", "Art. 46"],
+      dpdp: ["Sec. 16"],
+    },
+  },
+
+  // ───────────── Compliance ─────────────
+  {
+    id: "CMP-01",
+    name: "Legal and regulatory requirements register",
+    domain: "Compliance",
+    description:
+      "Applicable legal, statutory, regulatory and contractual requirements (incl. IP rights) are identified, documented and kept up to date.",
+    evidence: ["Compliance obligations register", "Legal review records", "Software license tracking"],
+    automatable: false,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.31", "A.5.32", "4.2"],
+      soc2: ["CC3.1", "CC2.3"],
+      csf2: ["GV.OC-03"],
+      nist80053: ["PM-1"],
+      pci4: ["12.4"],
+      gdpr: ["Art. 24"],
+      dpdp: ["Sec. 8(4)"],
+    },
+  },
+  {
+    id: "CMP-02",
+    name: "Protection of records and audit evidence",
+    domain: "Compliance",
+    description:
+      "Records required for compliance are protected from loss, falsification and unauthorized access and retained per requirements; audit activities are planned to minimize disruption.",
+    evidence: ["Records retention schedule", "Evidence repository access controls"],
+    automatable: true,
+    frequency: "Annual",
+    map: {
+      iso27001: ["A.5.33", "A.8.34", "7.5"],
+      soc2: ["CC2.1"],
+      csf2: ["PR.DS-01"],
+      nist80053: ["AU-11", "SI-12"],
+      hipaa: ["164.316(b)(2)(i)"],
+      pci4: ["10.5"],
+    },
+  },
+  {
+    id: "CMP-03",
+    name: "Cloud service security governance",
+    domain: "Compliance",
+    description:
+      "Use of cloud services follows defined requirements for acquisition, shared-responsibility, configuration, monitoring and exit.",
+    evidence: ["Cloud security policy", "Shared responsibility matrix", "CSPM reports"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.5.23"],
+      soc2: ["CC9.2", "CC6.1"],
+      csf2: ["GV.SC-07", "DE.CM-06", "GV.OC-05"],
+      nist80053: ["SA-9"],
+      pci4: ["12.8"],
+    },
+  },
+  {
+    id: "CMP-04",
+    name: "Payment page script integrity",
+    domain: "Compliance",
+    description:
+      "Scripts on payment pages are inventoried, authorized and integrity-checked; unauthorized changes to payment pages trigger alerts.",
+    evidence: ["Script inventory with justification", "CSP / SRI configuration", "Change detection alerts"],
+    automatable: true,
+    frequency: "Continuous",
+    map: {
+      iso27001: ["A.8.16", "A.8.26"],
+      soc2: ["CC7.1"],
+      csf2: ["DE.CM-09"],
+      nist80053: ["SI-4"],
+      pci4: ["6.4", "11.6"],
+    },
+  },
+  {
+    id: "CMP-05",
+    name: "Internal information quality and reporting",
+    domain: "Compliance",
+    description:
+      "Relevant, quality information from internal and external sources is captured to support the functioning of internal controls and compliance reporting.",
+    evidence: ["Control owner reports", "Compliance dashboard snapshots"],
+    automatable: true,
+    frequency: "Quarterly",
+    map: {
+      iso27001: ["9.1"],
+      soc2: ["CC2.1", "CC5.2"],
+      csf2: ["GV.OV-03"],
+      nist80053: ["CA-7"],
+    },
+  },
+];
+
+export const CONTROL_BY_ID: Record<string, UnifiedControl> = Object.fromEntries(CONTROLS.map((c) => [c.id, c]));
+
+export const DOMAINS: Domain[] = Array.from(new Set(CONTROLS.map((c) => c.domain)));
